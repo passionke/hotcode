@@ -18,22 +18,42 @@ for CASE in $CASES; do
     test "${CASE}" == "." && continue
     CASE_SOURCE_DIR="${PROJ_DIR}/${CASE_BASE_DIR}/${CASE}"
     CASE_TARGET_DIR="${PROJ_DIR}/${TARGET_BASE_DIR}/${CASE}"
+
     if [ -a "${CASE_TARGET_DIR}" ]; then
         rm -r ${CASE_TARGET_DIR}
     fi
+
     mkdir -p ${CASE_TARGET_DIR}
-    cp "${CASE_SOURCE_DIR}/A.java" "${CASE_TARGET_DIR}/A.java"
-    cd ${CASE_TARGET_DIR}
-    javac A.java
+
+    ### Copy first version classes to target path and compile them.
+    cd ${CASE_SOURCE_DIR}
+
+    for NAME in `ls ?.java`; do
+        cp $NAME ${CASE_TARGET_DIR}/$NAME
+    done
+
     cp "${PROJ_DIR}/${CASE_BASE_DIR}/Base.java" "${CASE_TARGET_DIR}/Base.java"
     cd ${CASE_TARGET_DIR}
-    javac Base.java
+    javac *.java
+
+    ### Run with HotCode
     java -javaagent:${HOTCODE_AGENT_PATH} -noverify Base ${CASE} &>result &
-    cp ${CASE_SOURCE_DIR}/A1.java ${CASE_TARGET_DIR}/A.java
-    javac A.java
+
+    ### Copy second version classes to target path and compile them.
+    cd ${CASE_SOURCE_DIR}
+
+    for NAME in `ls ??.java`; do
+        TARGET_NAME=`echo $NAME | sed 's/.\./\./g'`
+        cp $NAME ${CASE_TARGET_DIR}/${TARGET_NAME}
+    done
+
+    cd ${CASE_TARGET_DIR}
+    javac ?.java
+
+    ### Wait two seconds and check result.
     sleep 2
-    RESULT=`cat ${CASE_TARGET_DIR}/result`
-    IS_SUCCESS=`echo ${RESULT} | grep success`
+    RESULT=`cat result`
+    IS_SUCCESS=`grep success < result`
     if [ -z "${IS_SUCCESS}" ]; then
         echo $'\e[31m'"${RESULT}"$'\e[00m'
         FAILED="true"
