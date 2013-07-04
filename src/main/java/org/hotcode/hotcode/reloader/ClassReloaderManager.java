@@ -1,11 +1,14 @@
-package org.hotcode.hotcode;
+package org.hotcode.hotcode.reloader;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author hotcode.huangt 13-6-26 PM4:36
+ * Every {@link ClassLoader} has a {@link ClassReloaderManager} to manage the {@link ClassReloader} of the classes that
+ * loaded by the {@link ClassLoader}.
+ * 
+ * @author khotyn 13-6-26 PM4:36
  */
 public class ClassReloaderManager {
 
@@ -18,11 +21,11 @@ public class ClassReloaderManager {
     /**
      * Map from a internal name of a class to index.
      */
-    private Map<String, Long>        classMap         = new HashMap<>();
+    private Map<String, Long>        classMap         = new ConcurrentHashMap<>();
     /**
      * Map from indexGenerator to class reloader.
      */
-    private Map<Long, ClassReloader> classReloaderMap = new HashMap<>();
+    private Map<Long, ClassReloader> classReloaderMap = new ConcurrentHashMap<>();
 
     public ClassReloaderManager(ClassLoader classLoader){
         this.classLoader = classLoader;

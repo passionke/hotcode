@@ -3,7 +3,7 @@ package org.hotcode.hotcode.structure;
 /**
  * Method of a class.
  * 
- * @author hotcode.huangt 13-6-25 PM3:16
+ * @author khotyn 13-6-25 PM3:16
  */
 public class HotCodeMethod {
 

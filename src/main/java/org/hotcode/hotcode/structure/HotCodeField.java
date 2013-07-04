@@ -1,7 +1,7 @@
 package org.hotcode.hotcode.structure;
 
 import org.apache.commons.lang.StringUtils;
-import org.hotcode.hotcode.HotCodeUtil;
+import org.hotcode.hotcode.util.HotCodeUtil;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -9,7 +9,7 @@ import com.google.common.base.Strings;
 /**
  * A field of a class
  * 
- * @author hotcode.huangt 13-6-26 PM9:22
+ * @author khotyn 13-6-26 PM9:22
  */
 public class HotCodeField implements java.lang.Comparable {
 

@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.asm.adapters;
+package org.hotcode.hotcode.adapters;
 
 import java.lang.reflect.Modifier;
 
@@ -11,7 +11,7 @@ import org.objectweb.asm.Type;
 /**
  * Adapter that add field holders to the class.
  * 
- * @author hotcode 2013-06-24 20:21:57
+ * @author khotyn 2013-06-24 20:21:57
  */
 public class AddFieldsHolderAdapter extends ClassVisitor {
 

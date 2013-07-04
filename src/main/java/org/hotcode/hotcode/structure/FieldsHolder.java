@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * A data structure that holds the fields that added to the class.
  * 
- * @author hotcode 2013-06-24 20:22:27
+ * @author khotyn 2013-06-24 20:22:27
  */
 public class FieldsHolder {
 

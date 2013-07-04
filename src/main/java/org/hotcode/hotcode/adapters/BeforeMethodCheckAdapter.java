@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.asm.adapters;
+package org.hotcode.hotcode.adapters;
 
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.CodeFragment;
@@ -7,7 +7,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 /**
- * @author hotcode.huangt 13-6-25 PM9:48
+ * Add check and reload code before methods except "<clinit>"
+ * 
+ * @author khotyn 13-6-25 PM9:48
  */
 public class BeforeMethodCheckAdapter extends ClassVisitor {
 

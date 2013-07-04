@@ -1,28 +1,31 @@
-package org.hotcode.hotcode.asm.adapters;
+package org.hotcode.hotcode.adapters;
 
-import org.hotcode.hotcode.*;
+import org.hotcode.hotcode.CodeFragment;
 import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.reloader.ClassReloader;
+import org.hotcode.hotcode.reloader.ClassReloaderManager;
+import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.structure.FieldsHolder;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeField;
+import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.GeneratorAdapter;
 
 /**
  * Replace the field access of a class
  * 
- * @author hotcode.huangt 13-6-26 PM9:32
+ * @author khotyn 13-6-26 PM9:32
  */
 public class FieldTransformAdapter extends ClassVisitor {
 
     private ClassReloaderManager classReloaderManager;
-    private ClassReloader        classReloader;
     private HotCodeClass         originClass;
 
     public FieldTransformAdapter(ClassVisitor cv, long classReloaderManagerIndex, long classReloaderIndex){
         super(Opcodes.ASM4, cv);
-        classReloaderManager = HotCode.getClassReloaderManager(classReloaderManagerIndex);
-        classReloader = classReloaderManager.getClassReloader(classReloaderIndex);
+        classReloaderManager = CRMManager.getClassReloaderManager(classReloaderManagerIndex);
+        ClassReloader classReloader = classReloaderManager.getClassReloader(classReloaderIndex);
         originClass = classReloader.getOriginClass();
     }
 

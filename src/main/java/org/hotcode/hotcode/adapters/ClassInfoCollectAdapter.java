@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.asm.adapters;
+package org.hotcode.hotcode.adapters;
 
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeField;
@@ -9,7 +9,7 @@ import org.objectweb.asm.Opcodes;
 /**
  * Collect the basic info of a class
  * 
- * @author hotcode.huangt 13-6-26 PM9:19
+ * @author khotyn 13-6-26 PM9:19
  */
 public class ClassInfoCollectAdapter extends ClassVisitor {
 

@@ -3,6 +3,9 @@ package org.hotcode.hotcode;
 import java.lang.reflect.Modifier;
 
 import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.reloader.CRMManager;
+import org.hotcode.hotcode.reloader.ClassReloader;
+import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.hotcode.hotcode.structure.FieldsHolder;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -13,7 +16,7 @@ import org.objectweb.asm.commons.GeneratorAdapter;
 /**
  * Code fragment used to add to some place of a class.
  * 
- * @author hotcode.huangt 13-6-24 PM9:32
+ * @author khotyn 13-6-24 PM9:32
  */
 public class CodeFragment {
 
@@ -32,7 +35,7 @@ public class CodeFragment {
                           Type.getDescriptor(FieldsHolder.class));
 
         mv.visitLdcInsn(classReloaderManagerIndex);
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(HotCode.class), "getClassReloaderManager",
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(CRMManager.class), "getClassReloaderManager",
                            Type.getMethodDescriptor(Type.getType(ClassReloaderManager.class), Type.LONG_TYPE));
         mv.visitLdcInsn(classReloaderIndex);
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(ClassReloaderManager.class), "getClassReloader",

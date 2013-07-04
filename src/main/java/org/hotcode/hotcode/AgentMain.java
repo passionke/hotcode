@@ -8,16 +8,17 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
 import org.apache.commons.io.IOUtils;
-import org.hotcode.hotcode.java.lang.ClassLoaderAdapter;
+import org.hotcode.hotcode.jdk.ClassLoaderAdapter;
+import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
 /**
- * The entry of the HotCode agent.
+ * The entry of the CRMManager agent.
  * 
- * @author hotcode 2013-06-24 20:21:43
+ * @author khotyn 2013-06-24 20:21:43
  */
 public class AgentMain {
 

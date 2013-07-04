@@ -1,15 +1,16 @@
-package org.hotcode.hotcode;
+package org.hotcode.hotcode.util;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hotcode.hotcode.HotCodeConfiguration;
 
 /**
- * A utility class to dump transformed class to file java.
+ * A utility class to dump transformed class to file jdk.
  * 
- * @author hotcode.huangt 13-6-24 PM8:41
+ * @author khotyn 13-6-24 PM8:41
  */
 public class ClassDumper {
 
