@@ -4,6 +4,14 @@ CASE_BASE_DIR="src/test/cases"
 TARGET_BASE_DIR="target/cases"
 PROJ_DIR=`pwd`
 HOTCODE_AGENT_PATH="${PROJ_DIR}/target/hotcode.jar"
+
+MINGW32=`(uname | grep "MINGW32" | wc -l)`
+
+if [ $MINGW32 -eq 1 ] ; then
+    WIN_AGENT_PATH=`(echo ${HOTCODE_AGENT_PATH} | sed 's/\/\([a-zA-Z]\)\//\1:\//')`
+    HOTCODE_AGENT_PATH=${WIN_AGENT_PATH}
+fi
+
 FAILED="false"
 mkdir -p ${TARGET_BASE_DIR}
 cd ${CASE_BASE_DIR}
