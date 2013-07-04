@@ -1,14 +1,12 @@
 package org.hotcode.hotcode;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
+import java.lang.reflect.Constructor;
+import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
-import org.hotcode.hotcode.java.lang.ClassLoaderAdapter;
+import org.hotcode.hotcode.java.lang.JdkClassProcessorFactory;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -24,25 +22,28 @@ public class AgentMain {
     public static void premain(String agentArgs, Instrumentation inst) {
         ClassRedefiner.setInstrumentation(inst);
 
-        InputStream is = ClassLoader.getSystemResourceAsStream(Type.getInternalName(ClassLoader.class) + ".class");
+        redifineJdkClasses(inst);
+    }
 
-        try {
-            ClassReader cr = new ClassReader(IOUtils.toByteArray(new BufferedInputStream(is)));
-            ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
-            ClassVisitor cv = new ClassLoaderAdapter(cw);
-            cr.accept(cv, 0);
-            byte[] transformedByte = cw.toByteArray();
-            ClassDumper.dump(Type.getInternalName(ClassLoader.class), transformedByte);
-            ClassDefinition classDefinition = new ClassDefinition(ClassLoader.class, transformedByte);
+    private static void redifineJdkClasses(Instrumentation inst) {
+        for (Entry<Class<?>, Class<? extends ClassVisitor>> entry : JdkClassProcessorFactory.jdk_class_processor_holder.entrySet()) {
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassVisitor cv = cw;
 
             try {
-                inst.redefineClasses(classDefinition);
-            } catch (ClassNotFoundException | UnmodifiableClassException e) {
-                e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+                Constructor<? extends ClassVisitor> c = entry.getValue().getConstructor(ClassVisitor.class);
+                cv = c.newInstance(cv);
+                InputStream is = ClassLoader.getSystemResourceAsStream(Type.getInternalName(ClassLoader.class)
+                                                                       + ".class");
+                ClassReader cr = new ClassReader(is);
+                cr.accept(cv, 0);
+                byte[] transformedByte = cw.toByteArray();
+                ClassDumper.dump(Type.getInternalName(ClassLoader.class), transformedByte);
+                ClassDefinition definitions = new ClassDefinition(entry.getKey(), cw.toByteArray());
+                inst.redefineClasses(definitions);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
         }
-
     }
 }
