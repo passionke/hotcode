@@ -1,7 +1,7 @@
 package org.hotcode.hotcode;
 
 /**
- * The configuration of the CRMManager.
+ * The configuration of the HotCode.
  * 
  * @author khotyn 13-6-24 PM8:38
  */

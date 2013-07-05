@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Constants of CRMManager are defined here.
+ * Constants of HotCode are defined here.
  * 
  * @author khotyn 2013-06-24 20:22:14
  */
@@ -23,7 +23,7 @@ public class HotCodeConstant {
      */
     public static final String      HOTCODE_CLASS_RELOADER_FIELDS = "__hotcode_class_reloader_field__";
     /**
-     * The name of the CRMManager "<clinit>" method for class reinitialize.
+     * The name of the HotCode "<clinit>" method for class reinitialize.
      */
     public static final String      HOTCODE_CLINIT_METHOD_NAME    = "__hotcode_clinit__";
 
