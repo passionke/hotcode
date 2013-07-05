@@ -1,5 +1,7 @@
 package org.hotcode.hotcode.adapters;
 
+import java.lang.reflect.Modifier;
+
 import org.hotcode.hotcode.constants.HotCodeConstant;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.objectweb.asm.ClassVisitor;
@@ -19,10 +21,10 @@ public class AddClassReloaderAdapter extends ClassVisitor {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        // if (!Modifier.isInterface(access)) {
-        cv.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, HotCodeConstant.HOTCODE_CLASS_RELOADER_FIELDS,
-                      Type.getDescriptor(ClassReloader.class), null, null);
-        // }
+        if (!Modifier.isInterface(access)) {
+            cv.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, HotCodeConstant.HOTCODE_CLASS_RELOADER_FIELDS,
+                          Type.getDescriptor(ClassReloader.class), null, null);
+        }
         super.visit(version, access, name, signature, superName, interfaces);
     }
 }

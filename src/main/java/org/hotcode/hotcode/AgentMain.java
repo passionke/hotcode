@@ -32,7 +32,7 @@ public class AgentMain {
             ClassVisitor cv = cw;
 
             try {
-                Constructor<? extends ClassVisitor> c = entry.getValue().getConstructor(entry.getKey());
+                Constructor<? extends ClassVisitor> c = entry.getValue().getConstructor(ClassVisitor.class);
                 cv = c.newInstance(cv);
                 InputStream is = ClassLoader.getSystemResourceAsStream(Type.getInternalName(entry.getKey()) + ".class");
                 ClassReader cr = new ClassReader(is);

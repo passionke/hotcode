@@ -19,6 +19,6 @@ public class JdkClassProcessorFactory {
 
     static {
         jdk_class_processor_holder.put(ClassLoader.class, ClassLoaderAdapter.class);
-        // jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
+        jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
     }
 }
