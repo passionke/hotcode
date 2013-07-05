@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.asm.adapters;
+package org.hotcode.hotcode.adapters;
 
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.CodeFragment;
@@ -13,7 +13,7 @@ import org.objectweb.asm.Type;
  * Add "<clinit>" to class if not exist, or else transform the "<clinit>" methods. Add all the code in "<clinit>" to
  * {@link HotCodeConstant#HOTCODE_CLINIT_METHOD_NAME} to class reinitialization.
  * 
- * @author hotcode.huangt 13-6-24 PM10:13
+ * @author khotyn 13-6-24 PM10:13
  */
 public class ClinitClassAdapter extends ClassVisitor {
 

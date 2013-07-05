@@ -1,15 +1,19 @@
-package org.hotcode.hotcode;
+package org.hotcode.hotcode.reloader;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.hotcode.hotcode.ClassRedefiner;
+import org.hotcode.hotcode.ClassTransformer;
+import org.hotcode.hotcode.VersionedClassFile;
 import org.hotcode.hotcode.constants.HotCodeConstant;
 import org.hotcode.hotcode.structure.HotCodeClass;
+import org.hotcode.hotcode.util.ClassDumper;
 
 /**
  * Class reloader
  * 
- * @author hotcode.huangt 13-6-25 PM5:20
+ * @author khotyn 13-6-25 PM5:20
  */
 public class ClassReloader {
 
@@ -38,6 +42,10 @@ public class ClassReloader {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public VersionedClassFile getVersionedClassFile() {
+        return versionedClassFile;
     }
 
     private boolean reload() {

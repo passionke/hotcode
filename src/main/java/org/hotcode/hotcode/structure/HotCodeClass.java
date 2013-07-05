@@ -1,15 +1,15 @@
 package org.hotcode.hotcode.structure;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
- * @author hotcode.huangt 13-6-26 PM9:26
+ * @author khotyn 13-6-26 PM9:26
  */
 public class HotCodeClass {
 
     private String            className;
-    private Set<HotCodeField> fields = new TreeSet<>();
+    private Set<HotCodeField> fields = new LinkedHashSet<>();
 
     public Set<HotCodeField> getFields() {
         return fields;

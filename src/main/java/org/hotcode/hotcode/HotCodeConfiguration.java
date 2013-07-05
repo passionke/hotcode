@@ -1,14 +1,14 @@
 package org.hotcode.hotcode;
 
 /**
- * The configuration of the HotCode.
+ * The configuration of the CRMManager.
  * 
- * @author hotcode.huangt 13-6-24 PM8:38
+ * @author khotyn 13-6-24 PM8:38
  */
 public class HotCodeConfiguration {
 
     /**
-     * Set this field to true to enable HotCode to dump the class been transformed.
+     * Set this field to true to enable CRMManager to dump the class been transformed.
      */
     public static boolean ENABLE_CLASS_DUMP = true;
 

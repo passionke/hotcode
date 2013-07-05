@@ -6,12 +6,12 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 
 /**
- * @author hotcode.huangt 13-6-26 AM11:21
+ * @author khotyn 13-6-26 AM11:21
  */
 public class FileSystemVersionedClassFile extends VersionedClassFile {
 
     /**
-     * The class file in the file java.
+     * The class file in the file jdk.
      */
     private File file;
 

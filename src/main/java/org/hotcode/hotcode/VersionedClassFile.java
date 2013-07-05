@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Version class file.
  * 
- * @author hotcode.huangt 13-6-25 PM5:10
+ * @author khotyn 13-6-25 PM5:10
  */
 public abstract class VersionedClassFile {
 

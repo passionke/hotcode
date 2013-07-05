@@ -1,8 +1,8 @@
-package org.hotcode.hotcode.java.lang;
+package org.hotcode.hotcode.jdk;
 
 import java.security.ProtectionDomain;
 
-import org.hotcode.hotcode.HotCode;
+import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.NewLoadClassTransformer;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -33,7 +33,7 @@ public class ClassLoaderAdapter extends ClassVisitor {
                 @Override
                 public void visitCode() {
                     mv.visitVarInsn(Opcodes.ALOAD, 0);
-                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(HotCode.class),
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(CRMManager.class),
                                        "registerClassLoader", "(Ljava/lang/ClassLoader;)V");
                     mv.visitVarInsn(Opcodes.ALOAD, 1);
                     mv.visitVarInsn(Opcodes.ALOAD, 0);

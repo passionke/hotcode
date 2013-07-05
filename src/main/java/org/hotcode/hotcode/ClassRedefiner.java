@@ -7,7 +7,7 @@ import java.lang.instrument.UnmodifiableClassException;
 /**
  * Class redefiner, holds the instrumentation to redefine classes.
  * 
- * @author hotcode 2013-06-24 20:22:40
+ * @author khotyn 2013-06-24 20:22:40
  */
 public class ClassRedefiner {
 

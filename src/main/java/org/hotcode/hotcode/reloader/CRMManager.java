@@ -1,19 +1,19 @@
-package org.hotcode.hotcode;
+package org.hotcode.hotcode.reloader;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Universe
+ * {@link ClassReloaderManager} manager.
  * 
- * @author hotcode.huangt 13-6-26 PM5:13
+ * @author khotyn 13-6-26 PM5:13
  */
-public class HotCode {
+public class CRMManager {
 
     private static AtomicLong                      indexGenerator          = new AtomicLong(0);
-    private static Map<ClassLoader, Long>          classLoaderIndexMap     = new HashMap<>();
-    private static Map<Long, ClassReloaderManager> classReloaderManagerMap = new HashMap<>();
+    private static Map<ClassLoader, Long>          classLoaderIndexMap     = new ConcurrentHashMap<>();
+    private static Map<Long, ClassReloaderManager> classReloaderManagerMap = new ConcurrentHashMap<>();
 
     public static Long getIndex(ClassLoader classLoader) {
         return classLoaderIndexMap.get(classLoader);

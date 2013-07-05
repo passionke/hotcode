@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hotcode.hotcode.java.lang.reflect.JdkFieldAdapter;
+import org.hotcode.hotcode.jdk.ClassLoaderAdapter;
 import org.objectweb.asm.ClassVisitor;
 
 /**
@@ -18,6 +19,6 @@ public class JdkClassProcessorFactory {
 
     static {
         jdk_class_processor_holder.put(ClassLoader.class, ClassLoaderAdapter.class);
-        jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
+        // jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
     }
 }
