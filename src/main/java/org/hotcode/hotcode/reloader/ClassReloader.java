@@ -45,8 +45,8 @@ public class ClassReloader {
     }
 
     private boolean reload() {
-        byte[] transformedClassFile = ClassTransformer.transform(classReloaderManagerIndex, classIndex,
-                                                                 versionedClassFile.reloadAndGetClassFile());
+        byte[] transformedClassFile = ClassTransformer.transformReloadClass(classReloaderManagerIndex, classIndex,
+                versionedClassFile.reloadAndGetClassFile());
         ClassDumper.dump(originClass.getClassName().replace('.', '/'), transformedClassFile);
         try {
             ClassRedefiner.redefine(classLoader.loadClass(originClass.getClassName()), transformedClassFile);

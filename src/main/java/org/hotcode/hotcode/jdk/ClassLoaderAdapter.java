@@ -2,8 +2,8 @@ package org.hotcode.hotcode.jdk;
 
 import java.security.ProtectionDomain;
 
+import org.hotcode.hotcode.ClassTransformer;
 import org.hotcode.hotcode.reloader.CRMManager;
-import org.hotcode.hotcode.NewLoadClassTransformer;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -38,7 +38,7 @@ public class ClassLoaderAdapter extends ClassVisitor {
                     mv.visitVarInsn(Opcodes.ALOAD, 1);
                     mv.visitVarInsn(Opcodes.ALOAD, 0);
                     mv.visitVarInsn(Opcodes.ALOAD, 2);
-                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(NewLoadClassTransformer.class),
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(ClassTransformer.class),
                                        "transformNewLoadClass", "(Ljava/lang/String;Ljava/lang/ClassLoader;[B)[B");
                     mv.visitVarInsn(Opcodes.ASTORE, 2);
                     mv.visitVarInsn(Opcodes.ALOAD, 2);
