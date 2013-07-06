@@ -3,10 +3,11 @@ package org.hotcode.hotcode;
 import java.io.File;
 import java.net.URL;
 
-import org.hotcode.hotcode.adapters.*;
+import org.hotcode.hotcode.adapter.*;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
+import org.hotcode.hotcode.resource.FileSystemVersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;

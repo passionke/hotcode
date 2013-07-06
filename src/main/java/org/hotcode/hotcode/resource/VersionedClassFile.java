@@ -1,4 +1,4 @@
-package org.hotcode.hotcode;
+package org.hotcode.hotcode.resource;
 
 import java.util.concurrent.atomic.AtomicLong;
 

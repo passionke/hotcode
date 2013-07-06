@@ -2,7 +2,7 @@ package org.hotcode.hotcode;
 
 import java.lang.reflect.Modifier;
 
-import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;

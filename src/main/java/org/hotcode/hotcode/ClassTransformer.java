@@ -1,6 +1,6 @@
 package org.hotcode.hotcode;
 
-import org.hotcode.hotcode.adapters.*;
+import org.hotcode.hotcode.adapter.*;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;

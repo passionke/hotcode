@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.constants;
+package org.hotcode.hotcode.constant;
 
 import java.util.HashSet;
 import java.util.Set;

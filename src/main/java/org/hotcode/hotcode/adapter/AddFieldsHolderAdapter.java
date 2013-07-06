@@ -1,8 +1,8 @@
-package org.hotcode.hotcode.adapters;
+package org.hotcode.hotcode.adapter;
 
 import java.lang.reflect.Modifier;
 
-import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.structure.FieldsHolder;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
