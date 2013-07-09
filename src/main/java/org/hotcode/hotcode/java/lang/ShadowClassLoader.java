@@ -8,7 +8,7 @@
 package org.hotcode.hotcode.java.lang;
 
 import org.hotcode.hotcode.adapters.shadow.ShadowClassAdapter;
-import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;

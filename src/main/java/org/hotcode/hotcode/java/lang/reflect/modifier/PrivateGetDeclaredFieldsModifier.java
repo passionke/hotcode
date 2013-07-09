@@ -1,6 +1,6 @@
 package org.hotcode.hotcode.java.lang.reflect.modifier;
 
-import org.hotcode.hotcode.constants.HotCodeConstant;
+import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
