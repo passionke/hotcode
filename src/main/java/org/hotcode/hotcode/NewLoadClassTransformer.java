@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import org.hotcode.hotcode.adapters.*;
+import org.hotcode.hotcode.constants.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
@@ -24,7 +25,7 @@ public class NewLoadClassTransformer {
 
     public static byte[] transformNewLoadClass(String className, ClassLoader classLoader, byte[] classfileBuffer) {
         for (String SKIP_PKG : SKIP_PKGS) {
-            if (className.startsWith(SKIP_PKG)) {
+            if (className.startsWith(SKIP_PKG) || className.indexOf(HotCodeConstant.HOTCODE_SHADOW_CLASS_POSTFIX) != -1) {
                 return classfileBuffer;
             }
         }

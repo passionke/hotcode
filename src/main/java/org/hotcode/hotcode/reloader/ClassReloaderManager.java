@@ -58,12 +58,19 @@ public class ClassReloaderManager {
         return this.classLoader;
     }
 
-    public Class<?> getShadowClass(String name) {
+    public Class<?> getShadowClass(String originClassName) {
+        if(classMap.get(originClassName) == null) {
+            return null;
+        }
+
+        ClassReloader classReloader = classReloaderMap.get(classMap.get(originClassName));
+        String shadowClassName = classReloader.getShadowClassName();
+
         if (shadowClassLoader.get() == null) {
             shadowClassLoader = new WeakReference<ClassLoader>(new ShadowClassLoader(classLoader));
         }
         try {
-            return shadowClassLoader.get().loadClass(name);
+            return shadowClassLoader.get().loadClass(shadowClassName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace(); // TODO
         }

@@ -8,15 +8,19 @@
 package org.hotcode.hotcode.java.lang;
 
 import org.hotcode.hotcode.adapters.shadow.ShadowClassAdapter;
+import org.hotcode.hotcode.constants.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
+import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 /**
- * @author zhuyong 2013-7-5 3:42:13
+ * Shadow Class Loader
+ * 
+ * @author zhuyong 2013-7-5 15:42:13
  */
 public class ShadowClassLoader extends ClassLoader {
 
@@ -25,22 +29,30 @@ public class ShadowClassLoader extends ClassLoader {
     }
 
     @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return super.loadClass(name);
+    }
+
+    @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         Long index = CRMManager.getIndex(getParent());
         ClassReloaderManager classReloadManager = CRMManager.getClassReloaderManager(index);
 
-        ClassReloader classReloader = classReloadManager.getClassReloader(classReloadManager.getIndex(name));
+        String originClassName = name.substring(0, name.indexOf(HotCodeConstant.HOTCODE_SHADOW_CLASS_POSTFIX));
+        ClassReloader classReloader = classReloadManager.getClassReloader(classReloadManager.getIndex(originClassName));
 
         if (classReloader.getVersionedClassFile() != null) {
             byte[] classFile = classReloader.getVersionedClassFile().getClassFile();
             ClassReader cr = new ClassReader(classFile);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
-            ClassVisitor cv = new ShadowClassAdapter(cw);
+            ClassVisitor cv = new ShadowClassAdapter(cw, getParent());
             cr.accept(cv, 0);
             byte[] classRedefined = cw.toByteArray();
+
+            ClassDumper.dump(name, classRedefined);
             return super.defineClass(name, classRedefined, 0, classRedefined.length);
         }
 
-        return super.findClass(name);
+        return null;
     }
 }

@@ -29,6 +29,8 @@ public class HotCodeConstant {
 
     public static final Set<String> HOTCODE_ADDED_FIELDS          = new HashSet<>();
 
+    public static final String      HOTCODE_SHADOW_CLASS_POSTFIX  = "__$$shadow_class$$__";
+
     static {
         HOTCODE_ADDED_FIELDS.add(HOTCODE_STATIC_FIELDS);
         HOTCODE_ADDED_FIELDS.add(HOTCODE_INSTANCE_FIELDS);

@@ -31,9 +31,8 @@ public class JdkFieldAdapter extends ClassVisitor {
         // || (name.equals("getInt") && desc.equals("(Ljava/lang/Object;)I"))
         // || (name.equals("getLong") && desc.equals("(Ljava/lang/Object;)J"))
         // || (name.equals("getFloat") && desc.equals("(Ljava/lang/Object;)F"))
-        // || (name.equals("getDouble") && desc.equals("(Ljava/lang/Object;)D"))) {
-        // return new GetXModifier(mv, access, name, desc);
-        // }
+        // || (name.equals("getDouble") && desc.equals("(Ljava/lang/Object;)D"))) return new GetXModifier(mv, access,
+        // name, desc);
 
         // if ((name.equals("set") && desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)V"))
         // || (name.equals("setBoolean") && desc.equals("(Ljava/lang/Object;Z)V"))
