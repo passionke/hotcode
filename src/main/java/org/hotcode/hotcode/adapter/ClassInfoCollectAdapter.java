@@ -31,22 +31,31 @@ public class ClassInfoCollectAdapter extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         if (isReload) {
             reloadedClass.setClassName(originClass.getClassName());
+            reloadedClass.setAccess(access);
         } else {
             originClass.setClassName(name.replace('/', '.'));
+            originClass.setAccess(access);
         }
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        int newAccess = access;
+
+        if ((access & Opcodes.ACC_FINAL) != 0) {
+            newAccess = newAccess - Opcodes.ACC_FINAL;
+        }
+
         if (isReload) {
             HotCodeField reloadedField = new HotCodeField(access, name, desc);
             if (!originClass.getFields().contains(reloadedField)) {
                 reloadedClass.getFields().add(reloadedField);
             }
         } else {
-            originClass.getFields().add(new HotCodeField(access, name, desc));
+            originClass.getFields().add(new HotCodeField(newAccess, name, desc));
         }
-        return super.visitField(access, name, desc, signature, value);
+        return super.visitField(newAccess, name, desc, signature, value);
+
     }
 }

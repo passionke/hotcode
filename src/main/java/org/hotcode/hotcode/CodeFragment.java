@@ -76,6 +76,14 @@ public class CodeFragment {
         ga.visitLabel(label);
     }
 
+    public static void checkReloadInterfaceBeforeAccessField(MethodVisitor mv, String fieldOwner) {
+        mv.visitFieldInsn(Opcodes.GETSTATIC, fieldOwner, HotCodeConstant.HOTCODE_CLASS_RELOADER_FIELDS,
+                          Type.getDescriptor(ClassReloader.class));
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getInternalName(ClassReloader.class), "checkAndReload",
+                           Type.getMethodDescriptor(Type.BOOLEAN_TYPE));
+        mv.visitInsn(Opcodes.POP);
+    }
+
     public static void initHotCodeInstanceFieldIfNull(MethodVisitor mv, String fieldOwner) {
         mv.visitFieldInsn(Opcodes.GETFIELD, fieldOwner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                           Type.getDescriptor(FieldsHolder.class));

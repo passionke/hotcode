@@ -37,6 +37,10 @@ public class ClassTransformer {
             }
         }
 
+        if (className.contains("$$$")) {
+            return classfileBuffer;
+        }
+
         Long classReloaderManagerIndex = CRMManager.getIndex(classLoader);
 
         if (classReloaderManagerIndex == null) {
@@ -69,9 +73,9 @@ public class ClassTransformer {
 
         ClassReader cr = new ClassReader(classfileBuffer);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor cv = new AddFieldsHolderAdapter(cw);
+        ClassVisitor cv = new ClinitClassAdapter(cw, classReloaderManagerIndex, classReloaderIndex);
+        cv = new AddFieldsHolderAdapter(cv);
         cv = new AddClassReloaderAdapter(cv);
-        cv = new ClinitClassAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new BeforeMethodCheckAdapter(cv);
         cv = new ClassInfoCollectAdapter(cv, classReloaderManager.getClassReloader(classReloaderIndex), false);
         cr.accept(cv, 0);

@@ -25,7 +25,6 @@ public class AddFieldsHolderAdapter extends ClassVisitor {
         cv.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, HotCodeConstant.HOTCODE_STATIC_FIELDS,
                       Type.getDescriptor(FieldsHolder.class), null, null);
 
-        // Interfaces don't have any instances field.
         if (!Modifier.isInterface(access)) {
             cv.visitField(Opcodes.ACC_PUBLIC, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                           Type.getDescriptor(FieldsHolder.class), null, null);

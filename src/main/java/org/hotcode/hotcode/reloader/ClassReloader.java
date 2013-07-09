@@ -1,15 +1,16 @@
 package org.hotcode.hotcode.reloader;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.hotcode.hotcode.ClassRedefiner;
 import org.hotcode.hotcode.ClassTransformer;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.resource.VersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Class reloader
@@ -67,15 +68,42 @@ public class ClassReloader {
         return originClass.getClassName() + HotCodeConstant.HOTCODE_SHADOW_CLASS_POSTFIX + shadowIndexGenerator.get();
     }
 
+    public byte[] getClassFileByte() {
+        return versionedClassFile.getClassFile();
+    }
+
+    public void initInterface() {
+        Class klass = CRMManager.getClassReloaderManager(classReloaderManagerIndex).loadAssistClass(originClass.getClassName());
+        try {
+            Method method = klass.getMethod(HotCodeConstant.HOTCODE_INTERFACE_CLINIT_METHOD_NAME);
+            method.invoke(klass);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace(); // TODO
+        }
+    }
+
     private boolean reload() {
         byte[] transformedClassFile = ClassTransformer.transformReloadClass(classReloaderManagerIndex, classIndex,
-                versionedClassFile.reloadAndGetClassFile());
+                                                                            versionedClassFile.reloadAndGetClassFile());
         ClassDumper.dump(originClass.getClassName().replace('.', '/'), transformedClassFile);
         try {
-            ClassRedefiner.redefine(classLoader.loadClass(originClass.getClassName()), transformedClassFile);
-            Class<?> klass = classLoader.loadClass(originClass.getClassName());
+            Class klass = classLoader.loadClass(originClass.getClassName());
+            ClassRedefiner.redefine(klass, transformedClassFile);
+            CRMManager.getClassReloaderManager(classReloaderManagerIndex).incAssitClasssIndexGenerator();
+            reinit(klass);
+            return true;
+        } catch (ClassNotFoundException e) {
+            // TODO
+            return false;
+        }
+    }
 
-            // reinit class.
+    private void reinit(Class klass) {
+        int access = originClass.getAccess();
+
+        if (Modifier.isInterface(access)) {
+            initInterface();
+        } else {
             try {
                 Method method = klass.getMethod(HotCodeConstant.HOTCODE_CLINIT_METHOD_NAME);
                 method.invoke(klass);
@@ -84,11 +112,6 @@ public class ClassReloader {
             }
 
             shadowIndexGenerator.incrementAndGet();
-            
-            return true;
-        } catch (ClassNotFoundException e) {
-            // TODO
-            return false;
         }
     }
 }

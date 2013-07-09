@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.hotcode.hotcode.AssistClassClassLoader;
 import org.hotcode.hotcode.jdk.ShadowClassLoader;
 
 /**
@@ -15,22 +16,30 @@ import org.hotcode.hotcode.jdk.ShadowClassLoader;
  */
 public class ClassReloaderManager {
 
-    private ClassLoader                classLoader;
+    private ClassLoader                           classLoader;
     /**
      * Index generator.
      */
-    private AtomicLong                 indexGenerator    = new AtomicLong(0);
+    private AtomicLong                            indexGenerator            = new AtomicLong(0);
 
     /**
      * Map from a internal name of a class to index.
      */
-    private Map<String, Long>          classMap          = new ConcurrentHashMap<>();
+    private Map<String, Long>                     classMap                  = new ConcurrentHashMap<>();
     /**
      * Map from indexGenerator to class reloader.
      */
-    private Map<Long, ClassReloader>   classReloaderMap  = new ConcurrentHashMap<>();
+    private Map<Long, ClassReloader>              classReloaderMap          = new ConcurrentHashMap<>();
 
-    private WeakReference<ClassLoader> shadowClassLoader = null;
+    private WeakReference<ClassLoader>            shadowClassLoader         = null;
+    /**
+     * Assist class class loader.
+     */
+    private WeakReference<AssistClassClassLoader> assistClassClassLoader;
+    /**
+     * Assit class class name generator
+     */
+    private AtomicLong                            assistClassIndexGenerator = new AtomicLong(0);
 
     public ClassReloaderManager(ClassLoader classLoader){
         this.classLoader = classLoader;
@@ -59,7 +68,7 @@ public class ClassReloaderManager {
     }
 
     public Class<?> getShadowClass(String originClassName) {
-        if(classMap.get(originClassName) == null) {
+        if (classMap.get(originClassName) == null) {
             return null;
         }
 
@@ -76,5 +85,29 @@ public class ClassReloaderManager {
         }
 
         return null;
+    }
+
+    public Class<?> loadAssistClass(String className) {
+        AssistClassClassLoader accl;
+
+        if (assistClassClassLoader == null || (accl = assistClassClassLoader.get()) == null) {
+            accl = new AssistClassClassLoader(classLoader, getClassReloader(getIndex(className.replace(".", "/"))));
+            assistClassClassLoader = new WeakReference<>(accl);
+        }
+
+        try {
+            return accl.loadClass(getAssistClassName(className));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace(); // TODO
+            return null;
+        }
+    }
+
+    public void incAssitClasssIndexGenerator() {
+        assistClassIndexGenerator.incrementAndGet();
+    }
+
+    private String getAssistClassName(String className) {
+        return className + "$$$ASS$$$" + assistClassIndexGenerator.get();
     }
 }

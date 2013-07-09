@@ -8,8 +8,17 @@ import java.util.Set;
  */
 public class HotCodeClass {
 
+    private int               access;
     private String            className;
     private Set<HotCodeField> fields = new LinkedHashSet<>();
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int access) {
+        this.access = access;
+    }
 
     public Set<HotCodeField> getFields() {
         return fields;
