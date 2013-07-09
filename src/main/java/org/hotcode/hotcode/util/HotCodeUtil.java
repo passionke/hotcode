@@ -15,4 +15,13 @@ public class HotCodeUtil {
                                     "Name and desc can not be null.");
         return name + FIELD_DELIMITER + desc;
     }
+
+    public static String getMainClassNameFromAssitClassName(String assistClassName) {
+        if (assistClassName == null) {
+            return null;
+        }
+
+        int index = assistClassName.indexOf("$$$");
+        return assistClassName.substring(0, index);
+    }
 }

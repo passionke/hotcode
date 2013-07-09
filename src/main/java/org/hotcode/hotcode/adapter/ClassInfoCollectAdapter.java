@@ -23,12 +23,19 @@ public class ClassInfoCollectAdapter extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         hotCodeClass.setClassName(name.replace('/', '.'));
+        hotCodeClass.setAccess(access);
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-        hotCodeClass.getFields().add(new HotCodeField(access, name, desc));
-        return super.visitField(access, name, desc, signature, value);
+        int newAccess = access;
+
+        if ((access & Opcodes.ACC_FINAL) != 0) {
+            newAccess = newAccess - Opcodes.ACC_FINAL;
+        }
+
+        hotCodeClass.getFields().add(new HotCodeField(newAccess, name, desc));
+        return super.visitField(newAccess, name, desc, signature, value);
     }
 }
