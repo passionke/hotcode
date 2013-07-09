@@ -1,11 +1,11 @@
-package org.hotcode.hotcode.java.lang;
+package org.hotcode.hotcode.jdk;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hotcode.hotcode.java.lang.reflect.JdkFieldAdapter;
-import org.hotcode.hotcode.jdk.ClassLoaderAdapter;
+import org.hotcode.hotcode.jdk.reflect.JdkClassAdapter;
+import org.hotcode.hotcode.jdk.reflect.JdkFieldAdapter;
 import org.objectweb.asm.ClassVisitor;
 
 /**
@@ -19,6 +19,8 @@ public class JdkClassProcessorFactory {
 
     static {
         jdk_class_processor_holder.put(ClassLoader.class, ClassLoaderAdapter.class);
+        jdk_class_processor_holder.put(Class.class, JdkClassAdapter.class);
         jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
     }
+
 }

@@ -6,7 +6,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Constructor;
 import java.util.Map.Entry;
 
-import org.hotcode.hotcode.java.lang.JdkClassProcessorFactory;
+import org.hotcode.hotcode.jdk.JdkClassProcessorFactory;
 import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -36,7 +36,7 @@ public class AgentMain {
                 cv = c.newInstance(cv);
                 InputStream is = ClassLoader.getSystemResourceAsStream(Type.getInternalName(entry.getKey()) + ".class");
                 ClassReader cr = new ClassReader(is);
-                cr.accept(cv, 0);
+                cr.accept(cv, ClassReader.EXPAND_FRAMES);
                 byte[] transformedByte = cw.toByteArray();
                 ClassDumper.dump(Type.getInternalName(entry.getKey()), transformedByte);
                 ClassDefinition definitions = new ClassDefinition(entry.getKey(), cw.toByteArray());

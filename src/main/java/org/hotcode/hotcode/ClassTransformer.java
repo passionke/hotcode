@@ -1,5 +1,8 @@
 package org.hotcode.hotcode;
 
+import java.io.File;
+import java.net.URL;
+
 import org.hotcode.hotcode.adapter.*;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
@@ -11,9 +14,6 @@ import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-
-import java.io.File;
-import java.net.URL;
 
 /**
  * @author khotyn 13-6-26 PM2:17
@@ -73,7 +73,7 @@ public class ClassTransformer {
         cv = new AddClassReloaderAdapter(cv);
         cv = new ClinitClassAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new BeforeMethodCheckAdapter(cv);
-        cv = new ClassInfoCollectAdapter(cv, hotCodeClass);
+        cv = new ClassInfoCollectAdapter(cv, classReloaderManager.getClassReloader(classReloaderIndex), false);
         cr.accept(cv, 0);
         byte[] classRedefined = cw.toByteArray();
         ClassDumper.dump(className.replace('.', '/'), classRedefined);
@@ -96,6 +96,10 @@ public class ClassTransformer {
         cv = new FieldTransformAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new ClinitClassAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new BeforeMethodCheckAdapter(cv);
+        cv = new ClassInfoCollectAdapter(
+                                         cv,
+                                         CRMManager.getClassReloaderManager(classReloaderManagerIndex).getClassReloader(classReloaderIndex),
+                                         true);
         cr.accept(cv, 0);
         return cw.toByteArray();
     }

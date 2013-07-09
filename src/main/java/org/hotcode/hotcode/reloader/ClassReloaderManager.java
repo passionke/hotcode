@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.hotcode.hotcode.java.lang.ShadowClassLoader;
+import org.hotcode.hotcode.jdk.ShadowClassLoader;
 
 /**
  * Every {@link ClassLoader} has a {@link ClassReloaderManager} to manage the {@link ClassReloader} of the classes that

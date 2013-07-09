@@ -28,12 +28,21 @@ public class CRMHelper {
     }
 
     public static Class<?> getShadowClass(Class<?> originClass) {
-        ClassReloaderManager crm = CRMHelper.getClassReloaderManager(originClass.getClassLoader());
+        if (originClass.getClassLoader() != null) {
+            ClassReloaderManager crm = CRMHelper.getClassReloaderManager(originClass.getClassLoader());
 
-        if (crm != null) {
-            return crm.getShadowClass(originClass.getName());
+            if (crm != null) {
+                return crm.getShadowClass(originClass.getName());
+            }
+        }
+        return null;
+    }
+
+    public static boolean hasShadowClass(Class<?> originCLass) {
+        if (getShadowClass(originCLass) != null) {
+            return true;
         }
 
-        return null;
+        return false;
     }
 }

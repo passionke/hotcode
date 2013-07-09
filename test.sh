@@ -4,6 +4,7 @@ CASE_BASE_DIR="src/test/cases"
 TARGET_BASE_DIR="target/cases"
 PROJ_DIR=`pwd`
 HOTCODE_AGENT_PATH="${PROJ_DIR}/target/hotcode.jar"
+DEBUG_OPT="-server -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=n"
 
 MINGW32=`(uname | grep "MINGW32" | wc -l)`
 
@@ -28,7 +29,7 @@ for CASE in $CASES; do
     CASE_TARGET_DIR="${PROJ_DIR}/${TARGET_BASE_DIR}/${CASE}"
 
     if [ -a "${CASE_TARGET_DIR}" ]; then
-        rm -r ${CASE_TARGET_DIR}
+        rm -rf ${CASE_TARGET_DIR}
     fi
 
     mkdir -p ${CASE_TARGET_DIR}

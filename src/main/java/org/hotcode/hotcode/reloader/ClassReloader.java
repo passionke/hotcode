@@ -2,8 +2,8 @@ package org.hotcode.hotcode.reloader;
 
 import org.hotcode.hotcode.ClassRedefiner;
 import org.hotcode.hotcode.ClassTransformer;
-import org.hotcode.hotcode.resource.VersionedClassFile;
 import org.hotcode.hotcode.constant.HotCodeConstant;
+import org.hotcode.hotcode.resource.VersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
 
@@ -21,6 +21,7 @@ public class ClassReloader {
     private Long               classReloaderManagerIndex;
     private Long               classIndex;
     private HotCodeClass       originClass;
+    private HotCodeClass       reloadedClass;                           // contain new added fields & methods
     private VersionedClassFile versionedClassFile;
     private ClassLoader        classLoader;
     private AtomicLong         shadowIndexGenerator = new AtomicLong(0);
@@ -48,6 +49,10 @@ public class ClassReloader {
 
     public HotCodeClass getOriginClass() {
         return originClass;
+    }
+
+    public void setReloadedClass(HotCodeClass reloadedClass) {
+        this.reloadedClass = reloadedClass;
     }
 
     public ClassLoader getClassLoader() {

@@ -5,7 +5,7 @@
  * use it only in accordance with the terms of the license agreement you entered
  * into with Alibaba.com.
  */
-package org.hotcode.hotcode.adapters.shadow;
+package org.hotcode.hotcode.adapter.shadow;
 
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;

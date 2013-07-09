@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.java.lang.reflect;
+package org.hotcode.hotcode.jdk.reflect;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;

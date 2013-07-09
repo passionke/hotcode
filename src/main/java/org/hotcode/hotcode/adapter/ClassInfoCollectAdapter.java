@@ -1,5 +1,6 @@
 package org.hotcode.hotcode.adapter;
 
+import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeField;
 import org.objectweb.asm.ClassVisitor;
@@ -13,22 +14,39 @@ import org.objectweb.asm.Opcodes;
  */
 public class ClassInfoCollectAdapter extends ClassVisitor {
 
-    private HotCodeClass hotCodeClass;
+    private HotCodeClass originClass;
+    private HotCodeClass reloadedClass;
 
-    public ClassInfoCollectAdapter(ClassVisitor cv, HotCodeClass hotCodeClass){
+    private boolean      isReload;
+
+    public ClassInfoCollectAdapter(ClassVisitor cv, ClassReloader classReloader, boolean isReload){
         super(Opcodes.ASM4, cv);
-        this.hotCodeClass = hotCodeClass;
+        this.originClass = classReloader.getOriginClass();
+        this.reloadedClass = new HotCodeClass();
+        this.isReload = isReload;
+        classReloader.setReloadedClass(this.reloadedClass);
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        hotCodeClass.setClassName(name.replace('/', '.'));
+        if (isReload) {
+            reloadedClass.setClassName(originClass.getClassName());
+        } else {
+            originClass.setClassName(name.replace('/', '.'));
+        }
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
     @Override
     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-        hotCodeClass.getFields().add(new HotCodeField(access, name, desc));
+        if (isReload) {
+            HotCodeField reloadedField = new HotCodeField(access, name, desc);
+            if (!originClass.getFields().contains(reloadedField)) {
+                reloadedClass.getFields().add(reloadedField);
+            }
+        } else {
+            originClass.getFields().add(new HotCodeField(access, name, desc));
+        }
         return super.visitField(access, name, desc, signature, value);
     }
 }
