@@ -14,7 +14,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
 /**
- * The entry of the CRMManager agent.
+ * The entry of the HotCode agent.
  * 
  * @author khotyn 2013-06-24 20:21:43
  */

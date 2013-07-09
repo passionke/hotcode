@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.adapters;
+package org.hotcode.hotcode.adapter;
 
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.CodeFragment;

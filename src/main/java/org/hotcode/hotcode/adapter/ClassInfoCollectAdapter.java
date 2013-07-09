@@ -1,4 +1,4 @@
-package org.hotcode.hotcode.adapters;
+package org.hotcode.hotcode.adapter;
 
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeField;
