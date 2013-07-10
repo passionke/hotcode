@@ -7,9 +7,9 @@ public class A {
 
     private String two = "two";
 
-    public String test() throws Exception {
+    public boolean test() throws Exception {
         Class<?> clazz = this.getClass();
         Field f = clazz.getDeclaredField("two");
-        return f != null ? f.getName() : null;
+        return f != null;
     }
 }

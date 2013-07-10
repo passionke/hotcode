@@ -5,7 +5,7 @@ public class A {
 
     private String word = "one";
 
-    public String test() {
-        return word;
+    public boolean test() {
+        return word.equals("one");
     }
 }

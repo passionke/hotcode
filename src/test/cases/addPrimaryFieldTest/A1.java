@@ -5,7 +5,7 @@ public class A {
 
     private int i = 2;
 
-    public String test() {
-        return i == 2 ? "two" : "one";
+    public boolean test() {
+        return i == 2;
     }
 }

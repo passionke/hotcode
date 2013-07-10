@@ -1,10 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
+set -m
 CASE_BASE_DIR="src/test/cases"
 TARGET_BASE_DIR="target/cases"
 PROJ_DIR=`pwd`
 HOTCODE_AGENT_PATH="${PROJ_DIR}/target/hotcode.jar"
-DEBUG_OPT="-server -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=n"
+DEBUG_OPT="-server -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=9999,server=y,suspend=y"
 
 MINGW32=`(uname | grep "MINGW32" | wc -l)`
 
@@ -47,7 +48,7 @@ for CASE in $CASES; do
 
     ### Run with HotCode
     java -javaagent:${HOTCODE_AGENT_PATH} -noverify Base ${CASE} &>result &
-
+    JOB_ID=`jobs | grep 'Running' | awk '{print $1}' | grep -o '[0-9]\+'`
     ### Copy second version classes to target path and compile them.
     cd ${CASE_SOURCE_DIR}
 
@@ -58,9 +59,8 @@ for CASE in $CASES; do
 
     cd ${CASE_TARGET_DIR}
     javac ?.java
-
-    ### Wait two seconds and check result.
-    sleep 2
+    touch Base.class
+    fg "%${JOB_ID}" &>/dev/null
     RESULT=`cat result`
     IS_SUCCESS=`grep success < result`
     if [ -z "${IS_SUCCESS}" ]; then

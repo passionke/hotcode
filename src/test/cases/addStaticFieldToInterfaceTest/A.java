@@ -3,7 +3,7 @@
  */
 public class A {
 
-    public String test() {
-        return Integer.class.equals(B.KLASS) ? "one" : "two";
+    public boolean test() {
+        return Integer.class.equals(B.KLASS);
     }
 }

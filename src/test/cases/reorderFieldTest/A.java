@@ -6,7 +6,7 @@ public class A {
     private String one = "one";
     private String two = "two";
 
-    public String test() {
-        return one;
+    public boolean test() {
+        return one.equals("one");
     }
 }

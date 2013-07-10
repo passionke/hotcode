@@ -3,7 +3,7 @@
  */
 public class A {
 
-    public String test() {
-        return "one";
+    public boolean test() {
+        return true;
     }
 }
