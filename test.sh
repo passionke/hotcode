@@ -48,7 +48,7 @@ for CASE in $CASES; do
 
     ### Run with HotCode
     java -javaagent:${HOTCODE_AGENT_PATH} -noverify Base ${CASE} &>result &
-    JOB_ID=`jobs | grep 'Running' | awk '{print $1}' | grep -o '[0-9]\+'`
+    JOB_ID=`jobs -r | awk '{print $1}' | grep -o '[0-9]\+'`
     ### Copy second version classes to target path and compile them.
     cd ${CASE_SOURCE_DIR}
 
