@@ -1,7 +1,7 @@
 package org.hotcode.hotcode.jdk.reflect.modifier;
 
 import org.hotcode.hotcode.jdk.reflect.JdkReflectHelper;
-import org.hotcode.hotcode.reloader.CRMHelper;
+import org.hotcode.hotcode.reloader.CRMManager;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -25,7 +25,7 @@ public class PrivateGetDeclaredFieldsModifier extends GeneratorAdapter {
         if (opcode == Opcodes.INVOKESPECIAL && owner.equals("java/lang/Class") && name.equals("getDeclaredFields0")
             && desc.equals("(Z)[Ljava/lang/reflect/Field;")) {
             mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(CRMHelper.class), "hasShadowClass",
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(CRMManager.class), "hasShadowClass",
                                "(Ljava/lang/Class;)Z");
             Label old = new Label();
             mv.visitJumpInsn(Opcodes.IFEQ, old);

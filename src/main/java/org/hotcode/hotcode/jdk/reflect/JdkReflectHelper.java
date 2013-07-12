@@ -1,14 +1,13 @@
 package org.hotcode.hotcode.jdk.reflect;
 
-import org.hotcode.hotcode.constant.HotCodeConstant;
-import org.hotcode.hotcode.reloader.CRMHelper;
-import org.hotcode.hotcode.reloader.ClassReloader;
-import org.hotcode.hotcode.reloader.ClassReloaderManager;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hotcode.hotcode.constant.HotCodeConstant;
+import org.hotcode.hotcode.reloader.CRMManager;
+import org.hotcode.hotcode.reloader.ClassReloaderManager;
 
 /**
  * Field Reflect Helper
@@ -30,8 +29,7 @@ public class JdkReflectHelper {
     }
 
     public static Field[] privateGetDeclaredFields0(Class<?> clazz, boolean publicOnly) {
-        ClassReloaderManager classReloaderManager = CRMHelper.getClassReloaderManager(clazz.getClassLoader());
-        ClassReloader classReloader = CRMHelper.getClassReloader(clazz.getClassLoader(), clazz.getName());
+        ClassReloaderManager classReloaderManager = CRMManager.getClassReloaderManager(clazz.getClassLoader());
         Class<?> shadowClass = classReloaderManager.getShadowClass(clazz.getName());
         Field[] fields = null;
         if (publicOnly) {

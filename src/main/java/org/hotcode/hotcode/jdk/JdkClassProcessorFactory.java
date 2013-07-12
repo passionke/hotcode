@@ -15,12 +15,11 @@ import org.objectweb.asm.ClassVisitor;
  */
 public class JdkClassProcessorFactory {
 
-    public static final Map<Class<?>, Class<? extends ClassVisitor>> jdk_class_processor_holder = new HashMap<Class<?>, Class<? extends ClassVisitor>>();
+    public static final Map<Class<?>, Class<? extends ClassVisitor>> JDK_CLASS_PROCESSOR_HOLDER = new HashMap<Class<?>, Class<? extends ClassVisitor>>();
 
     static {
-        jdk_class_processor_holder.put(ClassLoader.class, ClassLoaderAdapter.class);
-        jdk_class_processor_holder.put(Class.class, JdkClassAdapter.class);
-        jdk_class_processor_holder.put(Field.class, JdkFieldAdapter.class);
+        JDK_CLASS_PROCESSOR_HOLDER.put(ClassLoader.class, ClassLoaderAdapter.class);
+        JDK_CLASS_PROCESSOR_HOLDER.put(Class.class, JdkClassAdapter.class);
+        JDK_CLASS_PROCESSOR_HOLDER.put(Field.class, JdkFieldAdapter.class);
     }
-
 }

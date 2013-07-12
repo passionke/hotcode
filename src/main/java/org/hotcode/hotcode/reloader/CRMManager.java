@@ -37,4 +37,43 @@ public class CRMManager {
 
         putClassReloaderManager(classLoader, new ClassReloaderManager(classLoader));
     }
+
+    public static ClassReloaderManager getClassReloaderManager(ClassLoader classLoader) {
+        Long index = CRMManager.getIndex(classLoader);
+
+        if (index == null) {
+            return null;
+        }
+
+        return CRMManager.getClassReloaderManager(index);
+    }
+
+    public static ClassReloader getClassReloader(ClassLoader classLoader, String className) {
+        ClassReloaderManager crm = getClassReloaderManager(classLoader);
+
+        if (crm == null) {
+            return null;
+        }
+
+        return crm.getClassReloader(crm.getIndex(className));
+    }
+
+    public static Class<?> getShadowClass(Class<?> originClass) {
+        if (originClass.getClassLoader() != null) {
+            ClassReloaderManager crm = getClassReloaderManager(originClass.getClassLoader());
+
+            if (crm != null) {
+                return crm.getShadowClass(originClass.getName());
+            }
+        }
+        return null;
+    }
+
+    public static boolean hasShadowClass(Class<?> originCLass) {
+        if (getShadowClass(originCLass) != null) {
+            return true;
+        }
+
+        return false;
+    }
 }

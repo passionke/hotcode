@@ -27,7 +27,7 @@ public class AgentMain {
     }
 
     private static void redifineJdkClasses(Instrumentation inst) {
-        for (Entry<Class<?>, Class<? extends ClassVisitor>> entry : JdkClassProcessorFactory.jdk_class_processor_holder.entrySet()) {
+        for (Entry<Class<?>, Class<? extends ClassVisitor>> entry : JdkClassProcessorFactory.JDK_CLASS_PROCESSOR_HOLDER.entrySet()) {
             ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             ClassVisitor cv = cw;
 
