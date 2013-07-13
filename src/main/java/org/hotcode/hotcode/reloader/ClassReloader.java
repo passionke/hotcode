@@ -1,16 +1,16 @@
 package org.hotcode.hotcode.reloader;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.hotcode.hotcode.ClassRedefiner;
 import org.hotcode.hotcode.ClassTransformer;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.resource.VersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Class reloader
@@ -54,6 +54,10 @@ public class ClassReloader {
 
     public void setReloadedClass(HotCodeClass reloadedClass) {
         this.reloadedClass = reloadedClass;
+    }
+
+    public HotCodeClass getLastestClass() {
+        return reloadedClass == null ? originClass : reloadedClass;
     }
 
     public ClassLoader getClassLoader() {

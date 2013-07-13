@@ -1,7 +1,5 @@
 package org.hotcode.hotcode.adapter;
 
-import java.lang.reflect.Modifier;
-
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.CodeFragment;
 import org.hotcode.hotcode.constant.HotCodeConstant;
@@ -47,21 +45,24 @@ public class FieldTransformAdapter extends ClassVisitor {
             @Override
             public void visitFieldInsn(int opcode, String owner, String name, String desc) {
                 Long ownerReloaderIndex = classReloaderManager.getIndex(owner);
-                HotCodeClass ownerOriginClass;
 
                 if (ownerReloaderIndex != null) {
-                    ownerOriginClass = classReloaderManager.getClassReloader(ownerReloaderIndex).getOriginClass();
+                    ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(ownerReloaderIndex);
 
-                    if (Modifier.isInterface(ownerOriginClass.getAccess())
-                        && !StringUtils.equals(owner.replace('/', '.'), originClass.getClassName())) {
-                        CodeFragment.checkReloadInterfaceBeforeAccessField(mv, owner);
+                    if (!StringUtils.equals(owner.replace('/', '.'), originClass.getClassName())) {
+                        ownerClassReloader.checkAndReload();
                     }
 
-                    if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && !ownerOriginClass.hasField(name, desc)) {
+                    HotCodeClass ownerOriginClass = ownerClassReloader.getOriginClass();
+                    HotCodeClass ownerLastestClass = ownerClassReloader.getLastestClass();
+
+                    HotCodeField field = ownerLastestClass.getFieldByName(name);
+
+                    if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && !ownerOriginClass.hasField(field)) {
                         if (opcode == Opcodes.GETSTATIC) {
                             ga.visitFieldInsn(Opcodes.GETSTATIC, owner, HotCodeConstant.HOTCODE_STATIC_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(name, desc));
+                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
                             ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                                                Type.getDescriptor(FieldsHolder.class),
                                                "getField",
@@ -73,18 +74,18 @@ public class FieldTransformAdapter extends ClassVisitor {
                             ga.visitFieldInsn(Opcodes.GETSTATIC, owner, HotCodeConstant.HOTCODE_STATIC_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));
                             ga.visitInsn(Opcodes.SWAP);
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(name, desc));
+                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
                             ga.visitInsn(Opcodes.SWAP);
                             ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getDescriptor(FieldsHolder.class),
                                                "addField", Type.getMethodDescriptor(Type.VOID_TYPE,
                                                                                     Type.getType(String.class),
                                                                                     Type.getType(Object.class)));
                         } else if (opcode == Opcodes.GETFIELD) {
+                            ga.visitInsn(Opcodes.DUP);
                             CodeFragment.initHotCodeInstanceFieldIfNull(mv, owner);
-                            ga.visitVarInsn(Opcodes.ALOAD, 0);
                             ga.visitFieldInsn(Opcodes.GETFIELD, owner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(name, desc));
+                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
                             ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
                                                Type.getDescriptor(FieldsHolder.class),
                                                "getField",
@@ -99,7 +100,7 @@ public class FieldTransformAdapter extends ClassVisitor {
                             ga.visitFieldInsn(Opcodes.GETFIELD, owner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));
                             ga.visitInsn(Opcodes.SWAP);
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(name, desc));
+                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
                             ga.visitInsn(Opcodes.SWAP);
                             ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getDescriptor(FieldsHolder.class),
                                                "addField", Type.getMethodDescriptor(Type.VOID_TYPE,
