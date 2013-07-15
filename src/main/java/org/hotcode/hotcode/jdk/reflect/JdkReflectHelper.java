@@ -120,14 +120,16 @@ public class JdkReflectHelper {
                 }
 
                 if (fieldHolder instanceof FieldsHolder) {
-                    return ((FieldsHolder) fieldHolder).getField(HotCodeUtil.getFieldKey(field.getModifiers(),
-                                                                                         field.getName(),
-                                                                                         Type.getDescriptor(field.getType())));
+                    Object returnValue = ((FieldsHolder) fieldHolder).getField(HotCodeUtil.getFieldKey(field.getModifiers(),
+                                                                                                       field.getName(),
+                                                                                                       Type.getDescriptor(field.getDeclaringClass())));
+                    return returnValue;
                 }
             } else {
                 Field originField = getOriginField(object.getClass(), field.getName());
                 originField.setAccessible(true);
-                return originField.get(object);
+                Object returnValue = originField.get(object);
+                return returnValue;
             }
         } catch (Exception e) {
             e.printStackTrace();

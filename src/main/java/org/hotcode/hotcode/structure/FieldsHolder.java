@@ -1,5 +1,8 @@
 package org.hotcode.hotcode.structure;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,5 +21,10 @@ public class FieldsHolder {
 
     public void addField(String fieldKey, Object value) {
         fields.put(fieldKey, value);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }
