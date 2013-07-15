@@ -66,11 +66,14 @@ public class CRMManager {
                 return crm.getShadowClass(originClass.getName());
             }
         }
+
         return null;
     }
 
-    public static boolean hasShadowClass(Class<?> originCLass) {
-        if (getShadowClass(originCLass) != null) {
+    public static boolean hasShadowClass(Class<?> originClass) {
+        Class<?> shadowClass = getShadowClass(originClass);
+
+        if (shadowClass != null) {
             return true;
         }
 

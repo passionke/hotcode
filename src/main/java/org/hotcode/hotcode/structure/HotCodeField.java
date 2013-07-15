@@ -61,7 +61,7 @@ public class HotCodeField implements java.lang.Comparable {
 
     @Override
     public String toString() {
-        return HotCodeUtil.getFieldKey(name, desc);
+        return HotCodeUtil.getFieldKey(access, name, desc);
     }
 
     @Override

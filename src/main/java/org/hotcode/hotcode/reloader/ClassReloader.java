@@ -60,6 +60,10 @@ public class ClassReloader {
         this.reloadedClass = reloadedClass;
     }
 
+    public HotCodeClass getLastestClass() {
+        return reloadedClass == null ? originClass : reloadedClass;
+    }
+
     public ClassLoader getClassLoader() {
         return classLoader;
     }

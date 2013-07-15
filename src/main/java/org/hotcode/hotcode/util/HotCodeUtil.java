@@ -10,10 +10,10 @@ public class HotCodeUtil {
 
     private static final char FIELD_DELIMITER = '-';
 
-    public static String getFieldKey(String name, String desc) {
+    public static String getFieldKey(int access, String name, String desc) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(name) && !Strings.isNullOrEmpty(desc),
                                     "Name and desc can not be null.");
-        return name + FIELD_DELIMITER + desc;
+        return access + FIELD_DELIMITER + name + FIELD_DELIMITER + desc;
     }
 
     public static String getMainClassNameFromAssitClassName(String assistClassName) {

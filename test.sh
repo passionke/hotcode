@@ -49,6 +49,7 @@ for CASE in $CASES; do
     ### Run with HotCode
     java -javaagent:${HOTCODE_AGENT_PATH} -noverify Base ${CASE} &>result &
     JOB_ID=`jobs -r | awk '{print $1}' | grep -o '[0-9]\+'`
+
     ### Copy second version classes to target path and compile them.
     cd ${CASE_SOURCE_DIR}
 
@@ -59,10 +60,17 @@ for CASE in $CASES; do
 
     cd ${CASE_TARGET_DIR}
     javac ?.java
+
+    ### Trigger java process continue to run.
     touch Base.class
+
+    ### Bring java process to fore ground.
     fg "%${JOB_ID}" &>/dev/null
+
+    ### Check the result.
     RESULT=`cat result`
     IS_SUCCESS=`grep success < result`
+    
     if [ -z "${IS_SUCCESS}" ]; then
         echo $'\e[31m'"${RESULT}"$'\e[00m'
         FAILED="true"

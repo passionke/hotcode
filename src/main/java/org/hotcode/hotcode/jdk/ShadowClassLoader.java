@@ -41,6 +41,8 @@ public class ShadowClassLoader extends ClassLoader {
         String originClassName = name.substring(0, name.indexOf(HotCodeConstant.HOTCODE_SHADOW_CLASS_POSTFIX));
         ClassReloader classReloader = classReloadManager.getClassReloader(classReloadManager.getIndex(originClassName));
 
+        Class<?> clazz = null;
+
         if (classReloader.getVersionedClassFile() != null) {
             byte[] classFile = classReloader.getVersionedClassFile().getClassFile();
             ClassReader cr = new ClassReader(classFile);
@@ -50,9 +52,9 @@ public class ShadowClassLoader extends ClassLoader {
             byte[] classRedefined = cw.toByteArray();
 
             ClassDumper.dump(name, classRedefined);
-            return super.defineClass(name, classRedefined, 0, classRedefined.length);
+            clazz = super.defineClass(name, classRedefined, 0, classRedefined.length);
         }
 
-        return null;
+        return clazz;
     }
 }

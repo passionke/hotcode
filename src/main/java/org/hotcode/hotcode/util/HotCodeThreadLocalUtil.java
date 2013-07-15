@@ -9,7 +9,7 @@ public class HotCodeThreadLocalUtil {
     }
 
     public static boolean isFirstAccess() {
-        return FIELD_ACCESS_THREAD_LOCAL.get() == null || !FIELD_ACCESS_THREAD_LOCAL.get().booleanValue();
+        return FIELD_ACCESS_THREAD_LOCAL.get() == null;
     }
 
     public static void clearAccess() {

@@ -45,8 +45,6 @@ public class GetXModifier extends GeneratorAdapter {
         returnValue();
 
         mark(old);
-        // Unmark access flag.
-        invokeStatic(Type.getType(HotCodeThreadLocalUtil.class), new Method("clearAccess", "()V"));
         super.visitCode();
     }
 }

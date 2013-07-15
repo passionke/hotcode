@@ -1,20 +1,22 @@
 package org.hotcode.hotcode.jdk.reflect;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.hotcode.hotcode.structure.FieldsHolder;
+import org.hotcode.hotcode.structure.HotCodeClass;
+import org.hotcode.hotcode.structure.HotCodeField;
 import org.hotcode.hotcode.util.HotCodeThreadLocalUtil;
 import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.Type;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Field Reflect Helper
@@ -79,25 +81,22 @@ public class JdkReflectHelper {
         return new Field[0];
     }
 
-    public static boolean isTransformFieldAccess(Class<?> originClass) {
-        if (CRMManager.hasShadowClass(originClass) && HotCodeThreadLocalUtil.isFirstAccess()) {
-            return true;
-        }
-
-        return false;
+    public static boolean isTransformFieldAccess(Object object) {
+        boolean result = CRMManager.hasShadowClass(object.getClass()) && HotCodeThreadLocalUtil.isFirstAccess();
+        return result;
     }
 
     private static boolean isNewField(Field field) {
-        Object originClass = field.getClass();
-        ClassReloader classReloader = CRMManager.getClassReloader(originClass.getClass().getClassLoader(),
-                                                                  originClass.getClass().getName());
+        Class<?> clazz = field.getDeclaringClass();
+        ClassReloader classReloader = CRMManager.getClassReloader(clazz.getClassLoader(), clazz.getName());
         if (classReloader == null || classReloader.getReloadedClass() == null) {
             return false;
         }
-        return classReloader.getReloadedClass().hasField(field.getModifiers(), field.getName(),
-                                                         Type.getDescriptor(field.getType()))
-               && classReloader.getOriginClass().hasField(field.getModifiers(), field.getName(),
-                                                          Type.getDescriptor(field.getType()));
+
+        HotCodeClass ownerLastestClass = classReloader.getLastestClass();
+        HotCodeField hotCodeField = ownerLastestClass.getFieldByName(field.getName());
+
+        return !classReloader.getOriginClass().hasField(hotCodeField);
     }
 
     /**
@@ -121,11 +120,13 @@ public class JdkReflectHelper {
                 }
 
                 if (fieldHolder instanceof FieldsHolder) {
-                    return ((FieldsHolder) fieldHolder).getField(HotCodeUtil.getFieldKey(field.getName(),
+                    return ((FieldsHolder) fieldHolder).getField(HotCodeUtil.getFieldKey(field.getModifiers(),
+                                                                                         field.getName(),
                                                                                          Type.getDescriptor(field.getType())));
                 }
             } else {
                 Field originField = getOriginField(object.getClass(), field.getName());
+                originField.setAccessible(true);
                 return originField.get(object);
             }
         } catch (Exception e) {

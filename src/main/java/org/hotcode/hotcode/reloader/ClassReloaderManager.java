@@ -1,12 +1,12 @@
 package org.hotcode.hotcode.reloader;
 
+import org.hotcode.hotcode.AssistClassClassLoader;
+import org.hotcode.hotcode.jdk.ShadowClassLoader;
+
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.hotcode.hotcode.AssistClassClassLoader;
-import org.hotcode.hotcode.jdk.ShadowClassLoader;
 
 /**
  * Every {@link ClassLoader} has a {@link ClassReloaderManager} to manage the {@link ClassReloader} of the classes that
