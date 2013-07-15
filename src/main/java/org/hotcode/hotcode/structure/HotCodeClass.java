@@ -28,8 +28,8 @@ public class HotCodeClass {
         this.fields = fields;
     }
 
-    public boolean hasField(String name, String desc) {
-        return fields.contains(new HotCodeField(0, name, desc));
+    public boolean hasField(int access, String name, String desc) {
+        return fields.contains(new HotCodeField(access, name, desc));
     }
 
     public String getClassName() {

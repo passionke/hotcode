@@ -1,6 +1,7 @@
 package org.hotcode.hotcode.jdk.reflect.modifier;
 
 import org.hotcode.hotcode.jdk.reflect.JdkReflectHelper;
+import org.hotcode.hotcode.util.HotCodeThreadLocalUtil;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -23,23 +24,29 @@ public class GetXModifier extends GeneratorAdapter {
 
     @Override
     public void visitCode() {
-        super.visitCode();
-
         loadArg(0);
-        loadThis();
-        invokeStatic(Type.getType(JdkReflectHelper.class), new Method("hasShadowClass",
-                                                                      "(Ljava/lang/Object;Ljava/lang/reflect/Field;)Z"));
+        invokeStatic(Type.getType(JdkReflectHelper.class),
+                     new Method("isTransformFieldAccess", "(Ljava/lang/Object;)Z"));
         Label old = newLabel();
         ifZCmp(EQ, old);
+
+        // Mark access flag.
+        invokeStatic(Type.getType(HotCodeThreadLocalUtil.class), new Method("access", "()V"));
 
         loadArg(0);
         loadThis();
 
         invokeStatic(Type.getType(JdkReflectHelper.class),
-                     new Method("getHotswapFieldHolderValue",
-                                "(Ljava/lang/Object;Ljava/lang/reflect/Field;)Ljava/lang/Object;"));
+                     new Method("getFieldValue", "(Ljava/lang/Object;Ljava/lang/reflect/Field;)Ljava/lang/Object;"));
         unbox(Type.getReturnType(desc));
+
+        // Unmark access flag.
+        invokeStatic(Type.getType(HotCodeThreadLocalUtil.class), new Method("clearAccess", "()V"));
         returnValue();
+
         mark(old);
+        // Unmark access flag.
+        invokeStatic(Type.getType(HotCodeThreadLocalUtil.class), new Method("clearAccess", "()V"));
+        super.visitCode();
     }
 }

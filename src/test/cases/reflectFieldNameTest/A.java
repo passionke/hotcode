@@ -5,11 +5,11 @@ import java.lang.reflect.Field;
  */
 public class A {
 
-    private String two = "two";
+    private String one = "one";
 
     public boolean test() throws Exception {
         Class<?> clazz = this.getClass();
-        Field f = clazz.getDeclaredField("two");
-        return f != null;
+        Field f = clazz.getDeclaredField("one");
+        return f.getName().equalsIgnoreCase("one");
     }
 }

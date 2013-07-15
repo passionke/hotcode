@@ -5,11 +5,12 @@ import java.lang.reflect.Field;
  */
 public class A {
 
-    private String one = "one";
+    private String str1 = "value1";
 
     public boolean test() throws Exception {
         Class<?> clazz = this.getClass();
-        Field f = clazz.getDeclaredField("one");
-        return f != null;
+        Field f = clazz.getDeclaredField("str1");
+        f.setAccessible(true);
+        return f.get(this).toString().equals(str1);
     }
 }

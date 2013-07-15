@@ -47,9 +47,10 @@ public class FieldTransformAdapter extends ClassVisitor {
             @Override
             public void visitFieldInsn(int opcode, String owner, String name, String desc) {
                 Long ownerReloaderIndex = classReloaderManager.getIndex(owner);
-                HotCodeClass ownerOriginClass;
+                HotCodeClass ownerOriginClass, reloadedClass;
 
                 if (ownerReloaderIndex != null) {
+                    reloadedClass = classReloaderManager.getClassReloader(ownerReloaderIndex).getReloadedClass();
                     ownerOriginClass = classReloaderManager.getClassReloader(ownerReloaderIndex).getOriginClass();
 
                     if (Modifier.isInterface(ownerOriginClass.getAccess())
@@ -57,7 +58,7 @@ public class FieldTransformAdapter extends ClassVisitor {
                         CodeFragment.checkReloadInterfaceBeforeAccessField(mv, owner);
                     }
 
-                    if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && !ownerOriginClass.hasField(name, desc)) {
+                    if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && reloadedClass.hasField(0, name, desc)) {
                         if (opcode == Opcodes.GETSTATIC) {
                             ga.visitFieldInsn(Opcodes.GETSTATIC, owner, HotCodeConstant.HOTCODE_STATIC_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));

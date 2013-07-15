@@ -29,7 +29,7 @@ public class JdkClassAdapter extends ClassVisitor {
             return new PrivateGetDeclaredFieldsModifier(mv, access, name, desc);
         }
 
-        if (name.equals("getDeclaredFields") || name.equals("getFields()")) {
+        if (name.equals("getDeclaredFields") || name.equals("getFields")) {
             return new GetDeclaredFieldsModifier(mv, access, name, desc);
         }
 

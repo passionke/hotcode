@@ -1,5 +1,6 @@
 package org.hotcode.hotcode.jdk.reflect;
 
+import org.hotcode.hotcode.jdk.reflect.modifier.GetXModifier;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -23,16 +24,17 @@ public class JdkFieldAdapter extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 
-        // if ((name.equals("get") && desc.equals("(Ljava/lang/Object;)Ljava/lang/Object;"))
-        // || (name.equals("getBoolean") && desc.equals("(Ljava/lang/Object;)Z"))
-        // || (name.equals("getByte") && desc.equals("(Ljava/lang/Object;)B"))
-        // || (name.equals("getChar") && desc.equals("(Ljava/lang/Object;)C"))
-        // || (name.equals("getShort") && desc.equals("(Ljava/lang/Object;)S"))
-        // || (name.equals("getInt") && desc.equals("(Ljava/lang/Object;)I"))
-        // || (name.equals("getLong") && desc.equals("(Ljava/lang/Object;)J"))
-        // || (name.equals("getFloat") && desc.equals("(Ljava/lang/Object;)F"))
-        // || (name.equals("getDouble") && desc.equals("(Ljava/lang/Object;)D"))) return new GetXModifier(mv, access,
-        // name, desc);
+        if ((name.equals("get") && desc.equals("(Ljava/lang/Object;)Ljava/lang/Object;"))
+            || (name.equals("getBoolean") && desc.equals("(Ljava/lang/Object;)Z"))
+            || (name.equals("getByte") && desc.equals("(Ljava/lang/Object;)B"))
+            || (name.equals("getChar") && desc.equals("(Ljava/lang/Object;)C"))
+            || (name.equals("getShort") && desc.equals("(Ljava/lang/Object;)S"))
+            || (name.equals("getInt") && desc.equals("(Ljava/lang/Object;)I"))
+            || (name.equals("getLong") && desc.equals("(Ljava/lang/Object;)J"))
+            || (name.equals("getFloat") && desc.equals("(Ljava/lang/Object;)F"))
+            || (name.equals("getDouble") && desc.equals("(Ljava/lang/Object;)D"))) {
+            return new GetXModifier(mv, access, name, desc);
+        }
 
         // if ((name.equals("set") && desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)V"))
         // || (name.equals("setBoolean") && desc.equals("(Ljava/lang/Object;Z)V"))
