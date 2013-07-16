@@ -1,5 +1,6 @@
 package org.hotcode.hotcode.jdk.reflect;
 
+import org.hotcode.hotcode.jdk.reflect.modifier.DeclaredAnnotationsModifier;
 import org.hotcode.hotcode.jdk.reflect.modifier.GetXModifier;
 import org.hotcode.hotcode.jdk.reflect.modifier.SetXModifier;
 import org.objectweb.asm.ClassVisitor;
@@ -49,9 +50,9 @@ public class JdkFieldAdapter extends ClassVisitor {
             return new SetXModifier(mv, access, name, desc);
         }
 
-        // if (name.equals("declaredAnnotations") && desc.equals("()Ljava/util/Map;")) {
-        // return new DeclaredAnnotationsModifier(mv, access, name, desc);
-        // }
+        if (name.equals("declaredAnnotations") && desc.equals("()Ljava/util/Map;")) {
+            return new DeclaredAnnotationsModifier(mv, access, name, desc);
+        }
 
         return mv;
     }
