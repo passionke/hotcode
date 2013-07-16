@@ -1,11 +1,5 @@
 package org.hotcode.hotcode.jdk.reflect;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
@@ -17,6 +11,12 @@ import org.hotcode.hotcode.structure.HotCodeField;
 import org.hotcode.hotcode.util.HotCodeThreadLocalUtil;
 import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.Type;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Field Reflect Helper
@@ -126,16 +126,48 @@ public class JdkReflectHelper {
                     return returnValue;
                 }
             } else {
-                Field originField = getOriginField(object.getClass(), field.getName());
-                originField.setAccessible(true);
-                Object returnValue = originField.get(object);
-                return returnValue;
+                return getOriginFieldValue(object.getClass(), object, field.getName());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    /**
+     * Set field value
+     */
+    public static void setFieldValue(Object object, Field field, Object fieldValue) {
+        ClassReloader classReloader = CRMManager.getClassReloader(object.getClass().getClassLoader(),
+                                                                  object.getClass().getName());
+        if (classReloader == null) {
+            return;
+        }
+
+        try {
+            if (isNewField(field)) {
+                Object fieldHolder = null;
+                if (Modifier.isStatic(field.getModifiers())) {
+                    fieldHolder = getOriginFieldValue(object.getClass(), object, HotCodeConstant.HOTCODE_STATIC_FIELDS);
+                } else {
+                    fieldHolder = getOriginFieldValue(object.getClass(), object,
+                                                      HotCodeConstant.HOTCODE_INSTANCE_FIELDS);
+                }
+
+                if (fieldHolder instanceof FieldsHolder) {
+                    String fieldKey = HotCodeUtil.getFieldKey(field.getModifiers(), field.getName(),
+                                                              Type.getDescriptor(field.getType()));
+                    ((FieldsHolder) fieldHolder).addField(fieldKey, fieldValue);
+                    return;
+                }
+            } else {
+                setOriginFieldValue(object.getClass(), object, field.getName(), fieldValue);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static Field getOriginField(Class<?> clazz, String fieldName) {

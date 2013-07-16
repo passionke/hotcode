@@ -1,6 +1,7 @@
 package org.hotcode.hotcode.jdk.reflect;
 
 import org.hotcode.hotcode.jdk.reflect.modifier.GetXModifier;
+import org.hotcode.hotcode.jdk.reflect.modifier.SetXModifier;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -36,18 +37,18 @@ public class JdkFieldAdapter extends ClassVisitor {
             return new GetXModifier(mv, access, name, desc);
         }
 
-        // if ((name.equals("set") && desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)V"))
-        // || (name.equals("setBoolean") && desc.equals("(Ljava/lang/Object;Z)V"))
-        // || (name.equals("setByte") && desc.equals("(Ljava/lang/Object;B)V"))
-        // || (name.equals("setChar") && desc.equals("(Ljava/lang/Object;C)V"))
-        // || (name.equals("setShort") && desc.equals("(Ljava/lang/Object;S)V"))
-        // || (name.equals("setInt") && desc.equals("(Ljava/lang/Object;I)V"))
-        // || (name.equals("setLong") && desc.equals("(Ljava/lang/Object;J)V"))
-        // || (name.equals("setFloat") && desc.equals("(Ljava/lang/Object;F)V"))
-        // || (name.equals("setDouble") && desc.equals("(Ljava/lang/Object;D)V"))) {
-        // return new SetXModifier(mv, access, name, desc);
-        // }
-        //
+        if ((name.equals("set") && desc.equals("(Ljava/lang/Object;Ljava/lang/Object;)V"))
+            || (name.equals("setBoolean") && desc.equals("(Ljava/lang/Object;Z)V"))
+            || (name.equals("setByte") && desc.equals("(Ljava/lang/Object;B)V"))
+            || (name.equals("setChar") && desc.equals("(Ljava/lang/Object;C)V"))
+            || (name.equals("setShort") && desc.equals("(Ljava/lang/Object;S)V"))
+            || (name.equals("setInt") && desc.equals("(Ljava/lang/Object;I)V"))
+            || (name.equals("setLong") && desc.equals("(Ljava/lang/Object;J)V"))
+            || (name.equals("setFloat") && desc.equals("(Ljava/lang/Object;F)V"))
+            || (name.equals("setDouble") && desc.equals("(Ljava/lang/Object;D)V"))) {
+            return new SetXModifier(mv, access, name, desc);
+        }
+
         // if (name.equals("declaredAnnotations") && desc.equals("()Ljava/util/Map;")) {
         // return new DeclaredAnnotationsModifier(mv, access, name, desc);
         // }
