@@ -90,6 +90,7 @@ public class CodeFragment {
                           Type.getDescriptor(FieldsHolder.class));
         Label label = new Label();
         mv.visitJumpInsn(Opcodes.IFNONNULL, label);
+        mv.visitInsn(Opcodes.DUP);
         mv.visitTypeInsn(Opcodes.NEW, Type.getInternalName(FieldsHolder.class));
         mv.visitInsn(Opcodes.DUP);
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Type.getInternalName(FieldsHolder.class), "<init>",

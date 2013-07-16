@@ -4,8 +4,9 @@
 public class A {
 
     private int i = 2;
+    private long j = 3;
 
     public boolean test() {
-        return i == 2;
+        return i == 2 && j == 3;
     }
 }

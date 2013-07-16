@@ -120,9 +120,9 @@ public class JdkReflectHelper {
                 }
 
                 if (fieldHolder instanceof FieldsHolder) {
-                    Object returnValue = ((FieldsHolder) fieldHolder).getField(HotCodeUtil.getFieldKey(field.getModifiers(),
-                                                                                                       field.getName(),
-                                                                                                       Type.getDescriptor(field.getDeclaringClass())));
+                    String fieldKey = HotCodeUtil.getFieldKey(field.getModifiers(), field.getName(),
+                                                              Type.getDescriptor(field.getType()));
+                    Object returnValue = ((FieldsHolder) fieldHolder).getField(fieldKey);
                     return returnValue;
                 }
             } else {
@@ -134,6 +134,7 @@ public class JdkReflectHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 

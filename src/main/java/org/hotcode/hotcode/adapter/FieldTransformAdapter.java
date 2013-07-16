@@ -95,7 +95,6 @@ public class FieldTransformAdapter extends ClassVisitor {
                             ga.box(Type.getType(desc));
                             ga.visitInsn(Opcodes.SWAP);
                             CodeFragment.initHotCodeInstanceFieldIfNull(mv, owner);
-                            ga.visitVarInsn(Opcodes.ALOAD, 0);
                             ga.visitFieldInsn(Opcodes.GETFIELD, owner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                                               Type.getDescriptor(FieldsHolder.class));
                             ga.visitInsn(Opcodes.SWAP);
