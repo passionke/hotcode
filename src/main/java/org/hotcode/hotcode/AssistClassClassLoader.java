@@ -1,6 +1,8 @@
 package org.hotcode.hotcode;
 
 import org.hotcode.hotcode.adapter.AssistClassAdapter;
+import org.hotcode.hotcode.adapter.FieldTransformAdapter;
+import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.util.ClassDumper;
 import org.objectweb.asm.ClassReader;
@@ -27,6 +29,7 @@ public class AssistClassClassLoader extends ClassLoader {
         ClassReader cr = new ClassReader(originClassFile);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
         ClassVisitor cv = new AssistClassAdapter(cw, name);
+        cv = new FieldTransformAdapter(cv, CRMManager.getIndex(getParent()), 0);
         cr.accept(cv, 0);
         byte[] assistClassFile = cw.toByteArray();
         ClassDumper.dump(name, assistClassFile);

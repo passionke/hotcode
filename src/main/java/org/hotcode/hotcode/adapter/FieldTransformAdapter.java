@@ -25,9 +25,13 @@ public class FieldTransformAdapter extends ClassVisitor {
 
     public FieldTransformAdapter(ClassVisitor cv, long classReloaderManagerIndex, long classReloaderIndex){
         super(Opcodes.ASM4, cv);
+
         classReloaderManager = CRMManager.getClassReloaderManager(classReloaderManagerIndex);
-        ClassReloader classReloader = classReloaderManager.getClassReloader(classReloaderIndex);
-        originClass = classReloader.getOriginClass();
+
+        if (classReloaderIndex != 0) {
+            ClassReloader classReloader = classReloaderManager.getClassReloader(classReloaderIndex);
+            originClass = classReloader.getOriginClass();
+        }
     }
 
     @Override
@@ -49,7 +53,7 @@ public class FieldTransformAdapter extends ClassVisitor {
                 if (ownerReloaderIndex != null) {
                     ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(ownerReloaderIndex);
 
-                    if (!StringUtils.equals(owner.replace('/', '.'), originClass.getClassName())) {
+                    if (originClass != null && !StringUtils.equals(owner.replace('/', '.'), originClass.getClassName())) {
                         ownerClassReloader.checkAndReload();
                     }
 
@@ -117,8 +121,11 @@ public class FieldTransformAdapter extends ClassVisitor {
 
     @Override
     public void visitEnd() {
-        for (HotCodeField field : originClass.getFields()) {
+        if (originClass == null) {
+            return;
+        }
 
+        for (HotCodeField field : originClass.getFields()) {
             cv.visitField(field.getAccess(), field.getName(), field.getDesc(), null, null);
         }
     }
