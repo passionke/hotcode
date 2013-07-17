@@ -12,6 +12,7 @@ import org.hotcode.hotcode.structure.HotCodeField;
 import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.Method;
 
 /**
  * Replace the field access of a class
@@ -64,50 +65,50 @@ public class FieldTransformAdapter extends ClassVisitor {
 
                     if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && !ownerOriginClass.hasField(field)) {
                         if (opcode == Opcodes.GETSTATIC) {
-                            ga.visitFieldInsn(Opcodes.GETSTATIC, owner, HotCodeConstant.HOTCODE_STATIC_FIELDS,
-                                              Type.getDescriptor(FieldsHolder.class));
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
-                            ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                                               Type.getDescriptor(FieldsHolder.class),
-                                               "getField",
-                                               Type.getMethodDescriptor(Type.getType(Object.class),
-                                                                        Type.getType(String.class)));
+                            ga.getStatic(Type.getObjectType(owner), HotCodeConstant.HOTCODE_STATIC_FIELDS,
+                                         Type.getType(FieldsHolder.class));
+                            ga.push(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
+                            ga.invokeVirtual(Type.getType(FieldsHolder.class),
+                                             new Method("getField",
+                                                        Type.getMethodDescriptor(Type.getType(Object.class),
+                                                                                 Type.getType(String.class))));
                             ga.unbox(Type.getType(desc));
                         } else if (opcode == Opcodes.PUTSTATIC) {
                             ga.box(Type.getType(desc));
-                            ga.visitFieldInsn(Opcodes.GETSTATIC, owner, HotCodeConstant.HOTCODE_STATIC_FIELDS,
-                                              Type.getDescriptor(FieldsHolder.class));
-                            ga.visitInsn(Opcodes.SWAP);
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
-                            ga.visitInsn(Opcodes.SWAP);
-                            ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getDescriptor(FieldsHolder.class),
-                                               "addField", Type.getMethodDescriptor(Type.VOID_TYPE,
-                                                                                    Type.getType(String.class),
-                                                                                    Type.getType(Object.class)));
+                            ga.getStatic(Type.getObjectType(owner), HotCodeConstant.HOTCODE_STATIC_FIELDS,
+                                         Type.getType(FieldsHolder.class));
+                            ga.swap();
+                            ga.push(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
+                            ga.swap();
+                            ga.invokeVirtual(Type.getType(FieldsHolder.class),
+                                             new Method("addField",
+                                                        Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                                                 Type.getType(String.class),
+                                                                                 Type.getType(Object.class))));
                         } else if (opcode == Opcodes.GETFIELD) {
                             CodeFragment.initHotCodeInstanceFieldIfNull(mv, owner);
-                            ga.visitFieldInsn(Opcodes.GETFIELD, owner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
-                                              Type.getDescriptor(FieldsHolder.class));
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
-                            ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                                               Type.getDescriptor(FieldsHolder.class),
-                                               "getField",
-                                               Type.getMethodDescriptor(Type.getType(Object.class),
-                                                                        Type.getType(String.class)));
+                            ga.getField(Type.getObjectType(owner), HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
+                                        Type.getType(FieldsHolder.class));
+                            ga.push(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
+                            ga.invokeVirtual(Type.getType(FieldsHolder.class),
+                                             new Method("getField",
+                                                        Type.getMethodDescriptor(Type.getType(Object.class),
+                                                                                 Type.getType(String.class))));
                             ga.unbox(Type.getType(desc));
                         } else if (opcode == Opcodes.PUTFIELD) {
                             ga.box(Type.getType(desc));
-                            ga.visitInsn(Opcodes.SWAP);
+                            ga.swap();
                             CodeFragment.initHotCodeInstanceFieldIfNull(mv, owner);
-                            ga.visitFieldInsn(Opcodes.GETFIELD, owner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
-                                              Type.getDescriptor(FieldsHolder.class));
-                            ga.visitInsn(Opcodes.SWAP);
-                            ga.visitLdcInsn(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
-                            ga.visitInsn(Opcodes.SWAP);
-                            ga.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Type.getDescriptor(FieldsHolder.class),
-                                               "addField", Type.getMethodDescriptor(Type.VOID_TYPE,
-                                                                                    Type.getType(String.class),
-                                                                                    Type.getType(Object.class)));
+                            ga.getField(Type.getObjectType(owner), HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
+                                        Type.getType(FieldsHolder.class));
+                            ga.swap();
+                            ga.push(HotCodeUtil.getFieldKey(field.getAccess(), name, desc));
+                            ga.swap();
+                            ga.invokeVirtual(Type.getType(FieldsHolder.class),
+                                             new Method("addField",
+                                                        Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                                                 Type.getType(String.class),
+                                                                                 Type.getType(Object.class))));
                         }
                     } else {
                         super.visitFieldInsn(opcode, owner, name, desc);
