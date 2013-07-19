@@ -48,14 +48,14 @@ public class CRMManager {
         return CRMManager.getClassReloaderManager(index);
     }
 
-    public static ClassReloader getClassReloader(ClassLoader classLoader, String className) {
+    public static ClassReloader getClassReloader(ClassLoader classLoader, String classInternalName) {
         ClassReloaderManager crm = getClassReloaderManager(classLoader);
 
         if (crm == null) {
             return null;
         }
 
-        return crm.getClassReloader(crm.getIndex(className));
+        return crm.getClassReloader(crm.getIndex(classInternalName));
     }
 
     public static Class<?> getShadowClass(Class<?> originClass) {

@@ -2,8 +2,10 @@ package org.hotcode.hotcode.adapter;
 
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeField;
+import org.hotcode.hotcode.structure.HotCodeMethod;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 /**
@@ -35,7 +37,16 @@ public class ClassInfoCollectAdapter extends ClassVisitor {
             newAccess = newAccess - Opcodes.ACC_FINAL;
         }
 
-        hotCodeClass.getFields().add(new HotCodeField(newAccess, name, desc));
+        hotCodeClass.addField(new HotCodeField(newAccess, name, desc));
         return super.visitField(newAccess, name, desc, signature, value);
+    }
+
+    @Override
+    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        if ("<init>".equals(name)) {
+            hotCodeClass.addConstructor(new HotCodeMethod(access, name, desc, signature, exceptions));
+        }
+
+        return super.visitMethod(access, name, desc, signature, exceptions);
     }
 }

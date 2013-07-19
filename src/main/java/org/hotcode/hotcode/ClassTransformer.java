@@ -70,13 +70,15 @@ public class ClassTransformer {
                                                                     fileSystemVersionedClassFile, hotCodeClass,
                                                                     classLoader));
         }
-
+        ClassReloader classReloader = CRMManager.getClassReloader(classLoader, className.replace('.', '/'));
         ClassReader cr = new ClassReader(classfileBuffer);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
         ClassVisitor cv = new ClinitClassAdapter(cw, classReloaderManagerIndex, classReloaderIndex);
+        cv = new ConstructorTransformAdapter(cv, classReloader);
         cv = new AddFieldsHolderAdapter(cv);
         cv = new AddClassReloaderAdapter(cv);
         cv = new BeforeMethodCheckAdapter(cv);
+
         cv = new ClassInfoCollectAdapter(cv, hotCodeClass);
         cr.accept(cv, 0);
         byte[] classRedefined = cw.toByteArray();
@@ -102,6 +104,7 @@ public class ClassTransformer {
         ClassVisitor cv = new AddFieldsHolderAdapter(cw);
         cv = new AddClassReloaderAdapter(cv);
         cv = new FieldTransformAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
+        cv = new ConstructorTransformAdapter(cv, classReloader);
         cv = new ClinitClassAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new BeforeMethodCheckAdapter(cv);
         cv = new ClassInfoCollectAdapter(cv, reloadedClass);

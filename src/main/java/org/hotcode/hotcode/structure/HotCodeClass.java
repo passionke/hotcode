@@ -14,9 +14,10 @@ import com.google.common.collect.Collections2;
  */
 public class HotCodeClass {
 
-    private int               access;
-    private String            className;
-    private Set<HotCodeField> fields = new LinkedHashSet<>();
+    private int                access;
+    private String             className;
+    private Set<HotCodeField>  fields       = new LinkedHashSet<>();
+    private Set<HotCodeMethod> constructors = new LinkedHashSet<>();
 
     public int getAccess() {
         return access;
@@ -26,12 +27,20 @@ public class HotCodeClass {
         this.access = access;
     }
 
+    public Set<HotCodeMethod> getConstructors() {
+        return constructors;
+    }
+
+    public void addConstructor(HotCodeMethod constructor) {
+        constructors.add(constructor);
+    }
+
     public Set<HotCodeField> getFields() {
         return fields;
     }
 
-    public void setFields(Set<HotCodeField> fields) {
-        this.fields = fields;
+    public void addField(HotCodeField field) {
+        fields.add(field);
     }
 
     public boolean hasField(HotCodeField hotCodeField) {
