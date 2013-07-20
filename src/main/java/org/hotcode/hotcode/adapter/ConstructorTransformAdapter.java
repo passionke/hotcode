@@ -10,7 +10,6 @@ import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeMethod;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.GeneratorAdapter;
-import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.tree.MethodNode;
 
 /**
@@ -55,8 +54,6 @@ public class ConstructorTransformAdapter extends ClassVisitor {
             ga.visitCode();
             CodeFragment.beforeMethodCheck(mv, Opcodes.ACC_PUBLIC, "<init>", methodDesc,
                                            originClass.getClassName().replace('.', '/'));
-            ga.loadThis();
-            ga.invokeConstructor(Type.getType(Object.class), new Method("<init>", "()V"));
             Label defaultLabel = new Label();
 
             if (addedConstructors.size() > 0) {
