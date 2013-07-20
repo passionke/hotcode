@@ -12,6 +12,6 @@ public class A {
     }
 
     public boolean test() {
-        return true;
+        return new A("Hello") != null;
     }
 }

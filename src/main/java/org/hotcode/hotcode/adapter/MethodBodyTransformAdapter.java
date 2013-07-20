@@ -128,7 +128,6 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
                 Type[] argumentTypes = Type.getArgumentTypes(desc);
                 push(argumentTypes.length);
                 newArray(Type.getType(Object.class));
-                dup();
                 int localIndex = newLocal(Type.getType(Object[].class));
                 storeLocal(localIndex);
 
