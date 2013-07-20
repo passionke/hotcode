@@ -11,9 +11,8 @@ import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.hotcode.hotcode.resource.FileSystemVersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.*;
+import org.objectweb.asm.commons.Method;
 
 /**
  * @author khotyn 13-6-26 PM2:17
@@ -77,10 +76,10 @@ public class ClassTransformer {
         cv = new ConstructorTransformAdapter(cv, classReloader);
         cv = new AddFieldsHolderAdapter(cv);
         cv = new AddClassReloaderAdapter(cv);
-        cv = new BeforeMethodCheckAdapter(cv);
+        cv = new BeforeMethodCheckAdapter(cv, classReloader);
 
         cv = new ClassInfoCollectAdapter(cv, hotCodeClass);
-        cr.accept(cv, 0);
+        cr.accept(cv, ClassReader.EXPAND_FRAMES);
         byte[] classRedefined = cw.toByteArray();
         ClassDumper.dump(className.replace('.', '/'), classRedefined);
         return classRedefined;
@@ -94,7 +93,8 @@ public class ClassTransformer {
      * @param classFile
      * @return
      */
-    public static byte[] transformReloadClass(Long classReloaderManagerIndex, Long classReloaderIndex, byte[] classFile) {
+    public static byte[] transformReloadClass(final Long classReloaderManagerIndex, final Long classReloaderIndex,
+                                              byte[] classFile) {
         ClassReloader classReloader = CRMManager.getClassReloaderManager(classReloaderManagerIndex).getClassReloader(classReloaderIndex);
         HotCodeClass reloadedClass = new HotCodeClass();
         classReloader.setReloadedClass(reloadedClass);
@@ -103,12 +103,24 @@ public class ClassTransformer {
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
         ClassVisitor cv = new AddFieldsHolderAdapter(cw);
         cv = new AddClassReloaderAdapter(cv);
+        cv = new ClassVisitor(Opcodes.ASM4, cv) {
+
+            @Override
+            public MethodVisitor visitMethod(final int access, String name, final String desc, final String signature,
+                                             String[] exceptions) {
+                return new MethodBodyTransformAdapter(access, new Method(name, desc), super.visitMethod(access, name,
+                                                                                                        desc,
+                                                                                                        signature,
+                                                                                                        exceptions),
+                                                      classReloaderManagerIndex, classReloaderIndex);
+            }
+        };
         cv = new FieldTransformAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
         cv = new ConstructorTransformAdapter(cv, classReloader);
         cv = new ClinitClassAdapter(cv, classReloaderManagerIndex, classReloaderIndex);
-        cv = new BeforeMethodCheckAdapter(cv);
+        cv = new BeforeMethodCheckAdapter(cv, classReloader);
         cv = new ClassInfoCollectAdapter(cv, reloadedClass);
-        cr.accept(cv, 0);
+        cr.accept(cv, ClassReader.EXPAND_FRAMES);
         return cw.toByteArray();
     }
 }

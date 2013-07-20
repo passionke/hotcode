@@ -1,5 +1,7 @@
 package org.hotcode.hotcode.structure;
 
+import java.util.Arrays;
+
 /**
  * Method of a class.
  * 
@@ -39,5 +41,54 @@ public class HotCodeMethod {
 
     public String[] getExceptions() {
         return exceptions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        HotCodeMethod that = (HotCodeMethod) o;
+
+        if (access != that.access) {
+            return false;
+        }
+
+        if (!desc.equals(that.desc)) {
+            return false;
+        }
+
+        if (!Arrays.equals(exceptions, that.exceptions)) {
+            return false;
+        }
+
+        if (!name.equals(that.name)) {
+            return false;
+        }
+
+        if (signature == null && that.signature == null) {
+            return true;
+        }
+
+        if (signature == null || that.signature == null) {
+            return false;
+        }
+
+        return signature.equals(that.signature);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = access;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + desc.hashCode();
+        result = 31 * result + (signature == null ? 0 : signature.hashCode());
+        result = 31 * result + Arrays.hashCode(exceptions);
+        return result;
     }
 }

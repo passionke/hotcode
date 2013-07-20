@@ -47,12 +47,28 @@ public class HotCodeClass {
         return fields.contains(hotCodeField);
     }
 
+    public boolean hasConstructor(HotCodeMethod constructor) {
+        return constructors.contains(constructor);
+    }
+
     public HotCodeField getFieldByName(final String fieldName) {
         Collection<HotCodeField> result = Collections2.filter(fields, new Predicate<HotCodeField>() {
 
             @Override
             public boolean apply(org.hotcode.hotcode.structure.HotCodeField input) {
                 return StringUtils.equals(fieldName, input.getName());
+            }
+        });
+
+        return result.isEmpty() ? null : result.iterator().next();
+    }
+
+    public HotCodeMethod getConstructorByNameAndDesc(final String name, final String desc) {
+        Collection<HotCodeMethod> result = Collections2.filter(constructors, new Predicate<HotCodeMethod>() {
+
+            @Override
+            public boolean apply(HotCodeMethod input) {
+                return StringUtils.equals(input.getName(), name) && StringUtils.equals(input.getDesc(), desc);
             }
         });
 

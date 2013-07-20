@@ -1,7 +1,8 @@
 package org.hotcode.hotcode.adapter;
 
-import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.CodeFragment;
+import org.hotcode.hotcode.reloader.ClassReloader;
+import org.hotcode.hotcode.structure.HotCodeMethod;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -13,10 +14,12 @@ import org.objectweb.asm.Opcodes;
  */
 public class BeforeMethodCheckAdapter extends ClassVisitor {
 
-    private String classInternalName;
+    private String        classInternalName;
+    private ClassReloader classReloader;
 
-    public BeforeMethodCheckAdapter(ClassVisitor cv){
+    public BeforeMethodCheckAdapter(ClassVisitor cv, ClassReloader classReloader){
         super(Opcodes.ASM4, cv);
+        this.classReloader = classReloader;
     }
 
     @Override
@@ -30,7 +33,11 @@ public class BeforeMethodCheckAdapter extends ClassVisitor {
                                      String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 
-        if (StringUtils.equals(name, "<clinit>")) {
+        if (name.equals("<clinit>")
+            || (name.equals("<init>") && !classReloader.getOriginClass().hasConstructor(new HotCodeMethod(access, name,
+                                                                                                          desc,
+                                                                                                          signature,
+                                                                                                          exceptions)))) {
             return mv;
         }
 

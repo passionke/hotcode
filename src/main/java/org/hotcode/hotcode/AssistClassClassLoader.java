@@ -1,13 +1,12 @@
 package org.hotcode.hotcode;
 
 import org.hotcode.hotcode.adapter.AssistClassAdapter;
-import org.hotcode.hotcode.adapter.FieldTransformAdapter;
+import org.hotcode.hotcode.adapter.MethodBodyTransformAdapter;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.util.ClassDumper;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.*;
+import org.objectweb.asm.commons.Method;
 
 /**
  * Class loader used to load assist classes.
@@ -29,7 +28,18 @@ public class AssistClassClassLoader extends ClassLoader {
         ClassReader cr = new ClassReader(originClassFile);
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
         ClassVisitor cv = new AssistClassAdapter(cw, name);
-        cv = new FieldTransformAdapter(cv, CRMManager.getIndex(getParent()), 0);
+        cv = new ClassVisitor(Opcodes.ASM4, cv) {
+
+            @Override
+            public MethodVisitor visitMethod(final int access, String name, final String desc, final String signature,
+                                             String[] exceptions) {
+                return new MethodBodyTransformAdapter(access, new Method(name, desc), super.visitMethod(access, name,
+                                                                                                        desc,
+                                                                                                        signature,
+                                                                                                        exceptions),
+                                                      CRMManager.getIndex(getParent()), 0L);
+            }
+        };
         cr.accept(cv, 0);
         byte[] assistClassFile = cw.toByteArray();
         ClassDumper.dump(name, assistClassFile);
