@@ -26,6 +26,7 @@ public class ClassInfoCollectAdapter extends ClassVisitor {
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         hotCodeClass.setClassName(name.replace('/', '.'));
         hotCodeClass.setAccess(access);
+        hotCodeClass.setSuperClassName(superName);
         super.visit(version, access, name, signature, superName, interfaces);
     }
 

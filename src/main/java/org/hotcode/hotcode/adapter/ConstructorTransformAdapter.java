@@ -12,19 +12,23 @@ import org.objectweb.asm.*;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.google.common.collect.Sets;
+
 /**
  * @author khotyn.huangt 13-7-19 PM6:41
  */
 public class ConstructorTransformAdapter extends ClassVisitor {
 
     private HotCodeClass                   originClass;
-    private Map<HotCodeMethod, MethodNode> addedConstructors = new TreeMap<>(new Comparator<HotCodeMethod>() {
+    private Map<HotCodeMethod, MethodNode> addedConstructors          = new TreeMap<>(new Comparator<HotCodeMethod>() {
 
-                                                                 @Override
-                                                                 public int compare(HotCodeMethod o1, HotCodeMethod o2) {
-                                                                     return o1.hashCode() - o2.hashCode();
-                                                                 }
-                                                             });
+                                                                          @Override
+                                                                          public int compare(HotCodeMethod o1,
+                                                                                             HotCodeMethod o2) {
+                                                                              return o1.hashCode() - o2.hashCode();
+                                                                          }
+                                                                      });
+    private Set<HotCodeMethod>             retainedOriginConstructors = new HashSet<>();
 
     public ConstructorTransformAdapter(ClassVisitor cv, ClassReloader classReloader){
         super(Opcodes.ASM4, cv);
@@ -33,11 +37,15 @@ public class ConstructorTransformAdapter extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-        if ("<init>".equals(name)
-            && !originClass.hasConstructor(new HotCodeMethod(access, name, desc, signature, exceptions))) {
-            MethodNode addConstructor = new MethodNode(access, name, desc, signature, exceptions);
-            addedConstructors.put(new HotCodeMethod(access, name, desc, signature, exceptions), addConstructor);
-            return addConstructor;
+        if ("<init>".equals(name)) {
+            HotCodeMethod constructor = new HotCodeMethod(access, name, desc, signature, exceptions);
+            if (originClass.hasConstructor(constructor)) {
+                retainedOriginConstructors.add(constructor);
+            } else {
+                MethodNode addConstructor = new MethodNode(access, name, desc, signature, exceptions);
+                addedConstructors.put(constructor, addConstructor);
+                return addConstructor;
+            }
         }
 
         return super.visitMethod(access, name, desc, signature, exceptions);
@@ -45,6 +53,18 @@ public class ConstructorTransformAdapter extends ClassVisitor {
 
     @Override
     public void visitEnd() {
+        Set<HotCodeMethod> removedConstructors = Sets.difference(originClass.getConstructors(),
+                                                                 retainedOriginConstructors);
+        for (HotCodeMethod removedConstructor : removedConstructors) {
+            MethodVisitor mv = cv.visitMethod(removedConstructor.getAccess(), removedConstructor.getName(),
+                                              removedConstructor.getDesc(), removedConstructor.getSignature(),
+                                              removedConstructor.getExceptions());
+            GeneratorAdapter ga = new GeneratorAdapter(mv, removedConstructor.getAccess(),
+                                                       removedConstructor.getName(), removedConstructor.getDesc());
+            ga.visitCode();
+            ga.endMethod();
+        }
+
         if (!Modifier.isInterface(originClass.getAccess())) {
             String methodDesc = Type.getMethodDescriptor(Type.VOID_TYPE,
                                                          Type.getType(HotCodeGenConstructorMarker.class),

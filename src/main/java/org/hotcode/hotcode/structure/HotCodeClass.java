@@ -16,6 +16,7 @@ public class HotCodeClass {
 
     private int                access;
     private String             className;
+    private String             superClassName;
     private Set<HotCodeField>  fields       = new LinkedHashSet<>();
     private Set<HotCodeMethod> constructors = new LinkedHashSet<>();
 
@@ -81,5 +82,13 @@ public class HotCodeClass {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getSuperClassName() {
+        return superClassName;
+    }
+
+    public void setSuperClassName(String superClassName) {
+        this.superClassName = superClassName;
     }
 }
