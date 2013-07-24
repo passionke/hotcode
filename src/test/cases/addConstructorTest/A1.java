@@ -3,15 +3,18 @@
  */
 public class A {
 
+    private int i;
+
     public A(){
 
     }
 
-    public A(String str){
-        System.out.println(str);
+    public A(int str){
+        i = str;
     }
 
     public boolean test() {
-        return new A("Hello") != null;
+        A a = new A(100);
+        return a.i == 100;
     }
 }

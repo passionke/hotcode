@@ -137,7 +137,7 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
                     swap();
                     push(i);
                     swap();
-                    arrayStore(argumentTypes[i]);
+                    arrayStore(HotCodeUtil.getBoxedType(argumentTypes[i]));
                 }
 
                 visitInsn(Opcodes.ACONST_NULL);

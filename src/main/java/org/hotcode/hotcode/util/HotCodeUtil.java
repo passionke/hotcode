@@ -1,5 +1,7 @@
 package org.hotcode.hotcode.util;
 
+import org.objectweb.asm.Type;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -23,5 +25,27 @@ public class HotCodeUtil {
 
         int index = assistClassName.indexOf("$$$");
         return assistClassName.substring(0, index);
+    }
+
+    public static Type getBoxedType(final Type type) {
+        switch (type.getSort()) {
+            case Type.BYTE:
+                return Type.getType(Byte.class);
+            case Type.BOOLEAN:
+                return Type.getType(Boolean.class);
+            case Type.SHORT:
+                return Type.getType(Short.class);
+            case Type.CHAR:
+                return Type.getType(Character.class);
+            case Type.INT:
+                return Type.getType(Integer.class);
+            case Type.FLOAT:
+                return Type.getType(Float.class);
+            case Type.LONG:
+                return Type.getType(Long.class);
+            case Type.DOUBLE:
+                return Type.getType(Double.class);
+        }
+        return type;
     }
 }

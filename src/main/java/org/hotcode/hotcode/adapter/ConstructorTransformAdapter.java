@@ -8,6 +8,7 @@ import org.hotcode.hotcode.HotCodeGenConstructorMarker;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.structure.HotCodeMethod;
+import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.tree.MethodNode;
@@ -100,7 +101,8 @@ public class ConstructorTransformAdapter extends ClassVisitor {
                     for (int i = 0; i < argumentTypes.length; i++) {
                         ga.loadArg(2);
                         ga.push(i);
-                        ga.arrayLoad(argumentTypes[i]);
+                        ga.arrayLoad(HotCodeUtil.getBoxedType(argumentTypes[i]));
+                        ga.unbox(argumentTypes[i]);
                         ga.storeLocal(ga.newLocal(argumentTypes[i]));
                     }
 
@@ -108,7 +110,7 @@ public class ConstructorTransformAdapter extends ClassVisitor {
 
                         @Override
                         public void visitVarInsn(int opcode, int var) {
-                            super.visitIntInsn(opcode, var + 3);
+                            super.visitVarInsn(opcode, var == 0 ? 0 : var + 3);
                         }
                     });
 
