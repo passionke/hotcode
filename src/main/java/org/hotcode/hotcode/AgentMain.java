@@ -12,6 +12,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The entry of the HotCode agent.
@@ -20,18 +22,18 @@ import org.objectweb.asm.Type;
  */
 public class AgentMain {
 
+    private static final Logger logger = LoggerFactory.getLogger(AgentMain.class);
+
     public static void premain(String agentArgs, Instrumentation inst) {
         ClassRedefiner.setInstrumentation(inst);
-
-        redifineJdkClasses(inst);
+        redefineJdkClasses(inst);
     }
 
-    private static void redifineJdkClasses(Instrumentation inst) {
-        for (Entry<Class<?>, Class<? extends ClassVisitor>> entry : JdkClassProcessorFactory.JDK_CLASS_PROCESSOR_HOLDER.entrySet()) {
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-            ClassVisitor cv = cw;
-
-            try {
+    private static void redefineJdkClasses(Instrumentation inst) {
+        try {
+            for (Entry<Class<?>, Class<? extends ClassVisitor>> entry : JdkClassProcessorFactory.JDK_CLASS_PROCESSOR_HOLDER.entrySet()) {
+                ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+                ClassVisitor cv = cw;
                 Constructor<? extends ClassVisitor> c = entry.getValue().getConstructor(ClassVisitor.class);
                 cv = c.newInstance(cv);
                 InputStream is = ClassLoader.getSystemResourceAsStream(Type.getInternalName(entry.getKey()) + ".class");
@@ -41,9 +43,9 @@ public class AgentMain {
                 ClassDumper.dump(Type.getInternalName(entry.getKey()), transformedByte);
                 ClassDefinition definitions = new ClassDefinition(entry.getKey(), cw.toByteArray());
                 inst.redefineClasses(definitions);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            logger.error("Failed to redefine JDK classes.", e);
         }
     }
 }

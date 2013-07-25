@@ -1,12 +1,14 @@
 package org.hotcode.hotcode.reloader;
 
-import org.hotcode.hotcode.AssistClassClassLoader;
-import org.hotcode.hotcode.jdk.ShadowClassLoader;
-
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.hotcode.hotcode.AssistClassClassLoader;
+import org.hotcode.hotcode.jdk.ShadowClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Every {@link ClassLoader} has a {@link ClassReloaderManager} to manage the {@link ClassReloader} of the classes that
@@ -16,6 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ClassReloaderManager {
 
+    private static final Logger                   logger                    = LoggerFactory.getLogger(ClassReloaderManager.class);
     private ClassLoader                           classLoader;
     /**
      * Index generator.
@@ -81,7 +84,7 @@ public class ClassReloaderManager {
         try {
             return shadowClassLoader.get().loadClass(shadowClassName);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to load shadow class " + shadowClassName + ".", e);
         }
 
         return null;
@@ -98,7 +101,7 @@ public class ClassReloaderManager {
         try {
             return accl.loadClass(getAssistClassName(className));
         } catch (ClassNotFoundException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to load assist class " + className + ".", e);
             return null;
         }
     }

@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.HotCodeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class to dump transformed class to file jdk.
@@ -13,6 +15,8 @@ import org.hotcode.hotcode.HotCodeConfiguration;
  * @author khotyn 13-6-24 PM8:41
  */
 public class ClassDumper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClassDumper.class);
 
     public static void dump(String className, byte[] classfile) {
         if (!HotCodeConfiguration.ENABLE_CLASS_DUMP) {
@@ -28,7 +32,7 @@ public class ClassDumper {
         try {
             FileUtils.writeByteArrayToFile(new File(dumpPath + "/" + className + ".class"), classfile);
         } catch (IOException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Error occur while try writing " + className + " to disk.", e);
         }
     }
 }

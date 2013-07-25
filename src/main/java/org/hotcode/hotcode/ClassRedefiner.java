@@ -4,6 +4,9 @@ import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class redefiner, holds the instrumentation to redefine classes.
  * 
@@ -11,6 +14,7 @@ import java.lang.instrument.UnmodifiableClassException;
  */
 public class ClassRedefiner {
 
+    private static final Logger    logger = LoggerFactory.getLogger(ClassRedefiner.class);
     private static Instrumentation inst;
 
     public static void setInstrumentation(Instrumentation inst) {
@@ -21,7 +25,7 @@ public class ClassRedefiner {
         try {
             inst.redefineClasses(new ClassDefinition(klass, classFile));
         } catch (ClassNotFoundException | UnmodifiableClassException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to redefine class " + klass.getName() + ".", e);
         }
     }
 }

@@ -1,5 +1,11 @@
 package org.hotcode.hotcode.jdk.reflect;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
@@ -11,12 +17,8 @@ import org.hotcode.hotcode.structure.HotCodeField;
 import org.hotcode.hotcode.util.HotCodeThreadLocalUtil;
 import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.Type;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Field Reflect Helper
@@ -25,11 +27,13 @@ import java.util.List;
  */
 public class JdkReflectHelper {
 
+    private static final Logger logger = LoggerFactory.getLogger(JdkReflectHelper.class);
+
     /**
      * Remove HotCode added fields
      */
     public static Field[] filterHotCodeFields(Field[] fields) {
-        List<Field> rets = new ArrayList<Field>();
+        List<Field> rets = new ArrayList<>();
         for (Field f : fields) {
             if (f.getName().equals(HotCodeConstant.HOTCODE_ADDED_FIELDS)
                 || f.getName().equals(HotCodeConstant.HOTCODE_STATIC_FIELDS)) {
@@ -46,14 +50,14 @@ public class JdkReflectHelper {
     public static Field[] privateGetDeclaredFields0(Class<?> clazz, boolean publicOnly) {
         ClassReloaderManager classReloaderManager = CRMManager.getClassReloaderManager(clazz.getClassLoader());
         Class<?> shadowClass = classReloaderManager.getShadowClass(clazz.getName());
-        Field[] fields = null;
+        Field[] fields;
         if (publicOnly) {
             fields = shadowClass.getFields();
         } else {
             fields = shadowClass.getDeclaredFields();
         }
         try {
-            List<Field> holderFields = new ArrayList<Field>();
+            List<Field> holderFields = new ArrayList<>();
 
             Field clazzField = Field.class.getDeclaredField("clazz");
             clazzField.setAccessible(true);
@@ -74,7 +78,7 @@ public class JdkReflectHelper {
 
             return holderFields.toArray(new Field[] {});
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to private get declared fields.", e);
         }
 
         // unreached
@@ -82,8 +86,7 @@ public class JdkReflectHelper {
     }
 
     public static boolean isTransformFieldAccess(Object object) {
-        boolean result = CRMManager.hasShadowClass(object.getClass()) && HotCodeThreadLocalUtil.isFirstAccess();
-        return result;
+        return CRMManager.hasShadowClass(object.getClass()) && HotCodeThreadLocalUtil.isFirstAccess();
     }
 
     private static boolean isNewField(Field field) {
@@ -111,7 +114,7 @@ public class JdkReflectHelper {
 
         try {
             if (isNewField(field)) {
-                Object fieldHolder = null;
+                Object fieldHolder;
                 if (Modifier.isStatic(field.getModifiers())) {
                     fieldHolder = getOriginFieldValue(object.getClass(), object, HotCodeConstant.HOTCODE_STATIC_FIELDS);
                 } else {
@@ -122,14 +125,13 @@ public class JdkReflectHelper {
                 if (fieldHolder instanceof FieldsHolder) {
                     String fieldKey = HotCodeUtil.getFieldKey(field.getModifiers(), field.getName(),
                                                               Type.getDescriptor(field.getType()));
-                    Object returnValue = ((FieldsHolder) fieldHolder).getField(fieldKey);
-                    return returnValue;
+                    return ((FieldsHolder) fieldHolder).getField(fieldKey);
                 }
             } else {
                 return getOriginFieldValue(object.getClass(), object, field.getName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to get field value.", e);
         }
 
         return null;
@@ -147,7 +149,7 @@ public class JdkReflectHelper {
 
         try {
             if (isNewField(field)) {
-                Object fieldHolder = null;
+                Object fieldHolder;
                 if (Modifier.isStatic(field.getModifiers())) {
                     fieldHolder = getOriginFieldValue(object.getClass(), object, HotCodeConstant.HOTCODE_STATIC_FIELDS);
                 } else {
@@ -159,14 +161,12 @@ public class JdkReflectHelper {
                     String fieldKey = HotCodeUtil.getFieldKey(field.getModifiers(), field.getName(),
                                                               Type.getDescriptor(field.getType()));
                     ((FieldsHolder) fieldHolder).addField(fieldKey, fieldValue);
-                    return;
                 }
             } else {
                 setOriginFieldValue(object.getClass(), object, field.getName(), fieldValue);
-                return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to set field value.", e);
         }
     }
 
@@ -181,7 +181,7 @@ public class JdkReflectHelper {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // To change body of catch statement use File | Settings | File Templates.
+            logger.error("Failed to get origin field.", e);
         }
 
         return null;
@@ -197,7 +197,7 @@ public class JdkReflectHelper {
             field.setAccessible(true);
             return field.get(target);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to get origin field value.", e);
             return null;
         }
     }
@@ -212,7 +212,7 @@ public class JdkReflectHelper {
             field.setAccessible(true);
             field.set(target, fieldValue);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed set origin field value.", e);
         }
     }
 }

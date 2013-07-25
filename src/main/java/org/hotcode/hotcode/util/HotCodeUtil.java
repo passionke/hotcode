@@ -18,7 +18,7 @@ public class HotCodeUtil {
         return access + FIELD_DELIMITER + name + FIELD_DELIMITER + desc;
     }
 
-    public static String getMainClassNameFromAssitClassName(String assistClassName) {
+    public static String getMainClassNameFromAssistClassName(String assistClassName) {
         if (assistClassName == null) {
             return null;
         }
@@ -27,6 +27,12 @@ public class HotCodeUtil {
         return assistClassName.substring(0, index);
     }
 
+    /**
+     * Get boxed type of a primary type, copy from {@link org.objectweb.asm.commons.GeneratorAdapter}
+     * 
+     * @param type
+     * @return
+     */
     public static Type getBoxedType(final Type type) {
         switch (type.getSort()) {
             case Type.BYTE:

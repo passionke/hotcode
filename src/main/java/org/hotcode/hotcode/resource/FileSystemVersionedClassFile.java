@@ -4,16 +4,19 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author khotyn 13-6-26 AM11:21
  */
 public class FileSystemVersionedClassFile extends VersionedClassFile {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileSystemVersionedClassFile.class);
     /**
      * The class file in the file jdk.
      */
-    private File file;
+    private File                file;
 
     public FileSystemVersionedClassFile(File file){
         try {
@@ -21,7 +24,7 @@ public class FileSystemVersionedClassFile extends VersionedClassFile {
             updateVersion(file.lastModified());
             setClassFile(FileUtils.readFileToByteArray(file));
         } catch (IOException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to load class file " + file.getName() + ".", e);
         }
     }
 
@@ -37,7 +40,7 @@ public class FileSystemVersionedClassFile extends VersionedClassFile {
             setClassFile(FileUtils.readFileToByteArray(file));
             return classFile;
         } catch (IOException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to reload class file " + file.getName() + ".", e);
             return null;
         }
     }

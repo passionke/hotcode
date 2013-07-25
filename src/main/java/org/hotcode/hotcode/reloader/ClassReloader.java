@@ -11,6 +11,8 @@ import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.resource.VersionedClassFile;
 import org.hotcode.hotcode.structure.HotCodeClass;
 import org.hotcode.hotcode.util.ClassDumper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class reloader
@@ -19,13 +21,15 @@ import org.hotcode.hotcode.util.ClassDumper;
  */
 public class ClassReloader {
 
-    private Long               classReloaderManagerIndex;
-    private Long               classIndex;
-    private HotCodeClass       originClass;
-    private HotCodeClass       reloadedClass;                           // contain all fields & methods
-    private VersionedClassFile versionedClassFile;
-    private ClassLoader        classLoader;
-    private AtomicLong         shadowIndexGenerator = new AtomicLong(0);
+    private static final Logger logger               = LoggerFactory.getLogger(ClassReloader.class);
+    private Long                classReloaderManagerIndex;
+    private Long                classIndex;
+    private HotCodeClass        originClass;
+    private HotCodeClass        reloadedClass;                                                      // contain all
+                                                                                                     // fields & methods
+    private VersionedClassFile  versionedClassFile;
+    private ClassLoader         classLoader;
+    private AtomicLong          shadowIndexGenerator = new AtomicLong(0);
 
     public ClassReloader(Long classReloaderManagerIndex, Long classIndex, VersionedClassFile versionedClassFile,
                          HotCodeClass originClass, ClassLoader classLoader){
@@ -37,14 +41,6 @@ public class ClassReloader {
     }
 
     public boolean checkAndReload() {
-        // try {
-        // Long index = CRMManager.getIndex(this.classLoader);
-        // ClassReloaderManager crm = CRMManager.getClassReloaderManager(index);
-        // Class<?> shadowClass = crm.getShadowClass(this.originClass.getClassName());
-        // System.out.println(shadowClass);
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
         return versionedClassFile.changed() && reload();
     }
 
@@ -86,7 +82,7 @@ public class ClassReloader {
             Method method = klass.getMethod(HotCodeConstant.HOTCODE_INTERFACE_CLINIT_METHOD_NAME);
             method.invoke(klass);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace(); // TODO
+            logger.error("Failed to init interface " + klass.getName() + ".", e);
         }
     }
 
@@ -116,7 +112,7 @@ public class ClassReloader {
                 Method method = klass.getMethod(HotCodeConstant.HOTCODE_CLINIT_METHOD_NAME);
                 method.invoke(klass);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace(); // TODO
+                logger.error("Failed reinit class " + klass.getName() + ".", e);
             }
 
             shadowIndexGenerator.incrementAndGet();
