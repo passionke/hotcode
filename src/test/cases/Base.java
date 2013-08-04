@@ -24,12 +24,12 @@ public class Base {
         Boolean reloadedResult = (Boolean) method.invoke(klass.newInstance());
 
         if (!result || !reloadedResult) {
-            System.err.println(caseName + " failed:");
+            System.err.println(caseName + "Failed!!");
             System.err.println("Result before reload is " + result);
             System.err.println("Result after reload is " + reloadedResult);
             System.exit(1);
         }
 
-        System.out.println(caseName + " success!");
+        System.out.println("Success!");
     }
 }

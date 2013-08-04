@@ -94,7 +94,7 @@ public class ClassReloaderManager {
         } catch (ClassNotFoundException e) {
             logger.error("Failed to load shadow class " + shadowClassName + ".", e);
         } finally {
-            HotCodeThreadLocalUtil.exitLoadShadowClass();
+            HotCodeThreadLocalUtil.endLoadShadowClass();
         }
 
         return null;

@@ -22,6 +22,7 @@ public class HotCode {
 
             return crm.loadShadowClass(className);
         }
+
         return null;
     }
 }

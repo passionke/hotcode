@@ -21,7 +21,7 @@ public class HotCodeThreadLocalUtil {
         LOADING_SHADOW_CLASS.set(true);
     }
 
-    public static void exitLoadShadowClass() {
+    public static void endLoadShadowClass() {
         LOADING_SHADOW_CLASS.remove();
     }
 

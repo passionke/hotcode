@@ -113,15 +113,15 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc) {
         if (opcode == Opcodes.INVOKESPECIAL && name.equals("<init>")) {
-            visitConstructor(owner, name, desc);
+            invokeConstructor(owner, name, desc);
         } else if (opcode == Opcodes.INVOKESTATIC) {
-            visitStatic(owner, name, desc);
+            invokeStatic(owner, name, desc);
         } else {
             super.visitMethodInsn(opcode, owner, name, desc);
         }
     }
 
-    private void visitConstructor(String owner, String name, String desc) {
+    private void invokeConstructor(String owner, String name, String desc) {
         Long index = classReloaderManager.getIndex(owner);
 
         String hotcodeGenConstructorDescs = Type.getMethodDescriptor(Type.VOID_TYPE,
@@ -147,7 +147,7 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
         }
     }
 
-    private void visitStatic(String owner, String name, String desc) {
+    private void invokeStatic(String owner, String name, String desc) {
         Long index = classReloaderManager.getIndex(owner);
 
         if (index == null || HotCodeConstant.HOTCODE_ADDED_METHODS.contains(name)) {

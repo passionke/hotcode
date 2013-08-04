@@ -26,6 +26,9 @@ fi
 
 for CASE in $CASES; do
     test "${CASE}" == "." && continue
+
+    echo $'\e[32m'"Start running case: ${CASE}"$'\e[00m'
+
     CASE_SOURCE_DIR="${PROJ_DIR}/${CASE_BASE_DIR}/${CASE}"
     CASE_TARGET_DIR="${PROJ_DIR}/${TARGET_BASE_DIR}/${CASE}"
 
@@ -69,7 +72,7 @@ for CASE in $CASES; do
 
     ### Check the result.
     RESULT=`cat result`
-    IS_SUCCESS=`grep success < result`
+    IS_SUCCESS=`grep Success < result`
     
     if [ -z "${IS_SUCCESS}" ]; then
         echo $'\e[31m'"${RESULT}"$'\e[00m'
