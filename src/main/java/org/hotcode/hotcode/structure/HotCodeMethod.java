@@ -2,6 +2,8 @@ package org.hotcode.hotcode.structure;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Method of a class.
  * 
@@ -90,5 +92,10 @@ public class HotCodeMethod {
         result = 31 * result + (signature == null ? 0 : signature.hashCode());
         result = 31 * result + Arrays.hashCode(exceptions);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

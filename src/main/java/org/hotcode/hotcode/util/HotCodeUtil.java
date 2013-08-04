@@ -1,5 +1,10 @@
 package org.hotcode.hotcode.util;
 
+import org.hotcode.hotcode.adapter.ClassInfoCollectAdapter;
+import org.hotcode.hotcode.structure.HotCodeClass;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 
 import com.google.common.base.Preconditions;
@@ -25,6 +30,25 @@ public class HotCodeUtil {
 
         int index = assistClassName.indexOf("$$$");
         return assistClassName.substring(0, index);
+    }
+
+    public static int getMethodIndex(String name, String desc) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name) && !Strings.isNullOrEmpty(desc),
+                                    "Name and desc can not be null.");
+        return (name + FIELD_DELIMITER + desc).hashCode();
+    }
+
+    public static String addThisToDesc(String originDesc, String className) {
+        return "(L" + className.replace('.', '/') + ";" + originDesc.substring(1);
+    }
+
+    public static HotCodeClass collectClassInfo(byte[] classFile) {
+        HotCodeClass result = new HotCodeClass();
+        ClassReader cr = new ClassReader(classFile);
+        ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
+        ClassVisitor cv = new ClassInfoCollectAdapter(cw, result);
+        cr.accept(cv, ClassReader.EXPAND_FRAMES);
+        return result;
     }
 
     /**

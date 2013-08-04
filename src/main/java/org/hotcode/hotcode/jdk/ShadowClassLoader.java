@@ -47,7 +47,7 @@ public class ShadowClassLoader extends ClassLoader {
             byte[] classFile = classReloader.getVersionedClassFile().getClassFile();
             ClassReader cr = new ClassReader(classFile);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
-            ClassVisitor cv = new ShadowClassAdapter(cw, getParent());
+            ClassVisitor cv = new ShadowClassAdapter(cw, name);
             cr.accept(cv, 0);
             byte[] classRedefined = cw.toByteArray();
 

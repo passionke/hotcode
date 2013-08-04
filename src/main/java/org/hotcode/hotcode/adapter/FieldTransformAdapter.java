@@ -44,5 +44,7 @@ public class FieldTransformAdapter extends ClassVisitor {
         for (HotCodeField field : originClass.getFields()) {
             cv.visitField(field.getAccess(), field.getName(), field.getDesc(), null, null);
         }
+
+        super.visitEnd();
     }
 }

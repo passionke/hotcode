@@ -19,6 +19,7 @@ public class HotCodeClass {
     private String             superClassName;
     private Set<HotCodeField>  fields       = new LinkedHashSet<>();
     private Set<HotCodeMethod> constructors = new LinkedHashSet<>();
+    private Set<HotCodeMethod> methods      = new LinkedHashSet<>();
 
     public int getAccess() {
         return access;
@@ -69,6 +70,26 @@ public class HotCodeClass {
 
             @Override
             public boolean apply(HotCodeMethod input) {
+                return StringUtils.equals(input.getName(), name) && StringUtils.equals(input.getDesc(), desc);
+            }
+        });
+
+        return result.isEmpty() ? null : result.iterator().next();
+    }
+
+    public Set<HotCodeMethod> getMethods() {
+        return methods;
+    }
+
+    public void addMethod(HotCodeMethod method) {
+        methods.add(method);
+    }
+
+    public HotCodeMethod getMethodByNameAndDesc(final String name, final String desc) {
+        Collection<HotCodeMethod> result = Collections2.filter(methods, new Predicate<HotCodeMethod>() {
+
+            @Override
+            public boolean apply(org.hotcode.hotcode.structure.HotCodeMethod input) {
                 return StringUtils.equals(input.getName(), name) && StringUtils.equals(input.getDesc(), desc);
             }
         });

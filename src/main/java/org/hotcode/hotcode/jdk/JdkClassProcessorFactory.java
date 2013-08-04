@@ -1,6 +1,7 @@
 package org.hotcode.hotcode.jdk;
 
 import java.lang.reflect.Field;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,12 @@ import org.objectweb.asm.ClassVisitor;
  */
 public class JdkClassProcessorFactory {
 
-    public static final Map<Class<?>, Class<? extends ClassVisitor>> JDK_CLASS_PROCESSOR_HOLDER = new HashMap<Class<?>, Class<? extends ClassVisitor>>();
+    public static final Map<Class<?>, Class<? extends ClassVisitor>> JDK_CLASS_PROCESSOR_HOLDER = new HashMap<>();
 
     static {
         JDK_CLASS_PROCESSOR_HOLDER.put(ClassLoader.class, ClassLoaderAdapter.class);
         JDK_CLASS_PROCESSOR_HOLDER.put(Class.class, JdkClassAdapter.class);
         JDK_CLASS_PROCESSOR_HOLDER.put(Field.class, JdkFieldAdapter.class);
+        JDK_CLASS_PROCESSOR_HOLDER.put(URLClassLoader.class, URLClassLoaderAdapter.class);
     }
 }

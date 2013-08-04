@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.hotcode.hotcode.AssistClassClassLoader;
 import org.hotcode.hotcode.jdk.ShadowClassLoader;
+import org.hotcode.hotcode.util.HotCodeThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,13 +79,22 @@ public class ClassReloaderManager {
         ClassReloader classReloader = classReloaderMap.get(classMap.get(originClassName));
         String shadowClassName = classReloader.getShadowClassName();
 
-        if (shadowClassLoader.get() == null) {
-            shadowClassLoader = new WeakReference<ClassLoader>(new ShadowClassLoader(classLoader));
+        return loadShadowClass(shadowClassName);
+    }
+
+    public Class<?> loadShadowClass(String shadowClassName) {
+        HotCodeThreadLocalUtil.startLoadShadowClass();
+        ShadowClassLoader tempShadowClassLoader = (ShadowClassLoader) shadowClassLoader.get();
+        if (tempShadowClassLoader == null) {
+            tempShadowClassLoader = new ShadowClassLoader(classLoader);
+            shadowClassLoader = new WeakReference<ClassLoader>(tempShadowClassLoader);
         }
         try {
-            return shadowClassLoader.get().loadClass(shadowClassName);
+            return tempShadowClassLoader.loadClass(shadowClassName);
         } catch (ClassNotFoundException e) {
             logger.error("Failed to load shadow class " + shadowClassName + ".", e);
+        } finally {
+            HotCodeThreadLocalUtil.exitLoadShadowClass();
         }
 
         return null;

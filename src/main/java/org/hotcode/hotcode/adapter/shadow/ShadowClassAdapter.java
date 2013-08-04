@@ -7,8 +7,6 @@
  */
 package org.hotcode.hotcode.adapter.shadow;
 
-import org.hotcode.hotcode.reloader.CRMManager;
-import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -20,22 +18,16 @@ import org.objectweb.asm.Opcodes;
  */
 public class ShadowClassAdapter extends ClassVisitor {
 
-    private ClassLoader classLoader;
+    private String shadowClassname;
 
-    public ShadowClassAdapter(ClassVisitor cv, ClassLoader classLoader){
+    public ShadowClassAdapter(ClassVisitor cv, String shadowClassName){
         super(Opcodes.ASM4, cv);
-
-        this.classLoader = classLoader;
+        this.shadowClassname = shadowClassName;
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        Long index = CRMManager.getIndex(this.classLoader);
-        if (index != null) {
-            ClassReloaderManager crm = CRMManager.getClassReloaderManager(index);
-            name = crm.getClassReloader(crm.getIndex(name)).getShadowClassName();
-        }
-        super.visit(version, access, name, signature, superName, interfaces);
+        super.visit(version, access, shadowClassname, signature, superName, interfaces);
     }
 
     @Override

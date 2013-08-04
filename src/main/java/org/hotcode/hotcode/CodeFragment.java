@@ -7,6 +7,7 @@ import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.hotcode.hotcode.structure.FieldsHolder;
+import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -98,5 +99,31 @@ public class CodeFragment {
         mv.visitFieldInsn(Opcodes.PUTFIELD, fieldOwner, HotCodeConstant.HOTCODE_INSTANCE_FIELDS,
                           Type.getDescriptor(FieldsHolder.class));
         mv.visitLabel(label);
+    }
+
+    /**
+     * Pack arguments to a array and return the local index of the array.
+     * 
+     * @param ga
+     * @param desc
+     * @return
+     */
+    public static int packArgsToArray(GeneratorAdapter ga, String desc) {
+        Type[] argumentTypes = Type.getArgumentTypes(desc);
+        ga.push(argumentTypes.length);
+        ga.newArray(Type.getType(Object.class));
+        int localIndex = ga.newLocal(Type.getType(Object[].class));
+        ga.storeLocal(localIndex);
+
+        for (int i = 0; i < argumentTypes.length; i++) {
+            ga.box(argumentTypes[i]);
+            ga.loadLocal(localIndex);
+            ga.swap();
+            ga.push(i);
+            ga.swap();
+            ga.arrayStore(HotCodeUtil.getBoxedType(argumentTypes[i]));
+        }
+
+        return localIndex;
     }
 }

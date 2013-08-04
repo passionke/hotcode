@@ -17,6 +17,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transform method body.
@@ -25,6 +27,7 @@ import org.objectweb.asm.commons.Method;
  */
 public class MethodBodyTransformAdapter extends GeneratorAdapter {
 
+    private static final Logger  logger = LoggerFactory.getLogger(MethodBodyTransformAdapter.class);
     private ClassReloaderManager classReloaderManager;
     private HotCodeClass         originClass;
 
@@ -110,45 +113,61 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc) {
         if (opcode == Opcodes.INVOKESPECIAL && name.equals("<init>")) {
-            Long index = classReloaderManager.getIndex(owner);
-
-            String hotcodeGenConstructorDescs = Type.getMethodDescriptor(Type.VOID_TYPE,
-                                                                         Type.getType(HotCodeGenConstructorMarker.class),
-                                                                         Type.INT_TYPE, Type.getType(Object[].class));
-
-            if (index == null || desc.equals(hotcodeGenConstructorDescs)) {
-                super.visitMethodInsn(opcode, owner, name, desc);
-                return;
-            }
-
-            ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(index);
-            HotCodeMethod constructor = ownerClassReloader.getLastestClass().getConstructorByNameAndDesc(name, desc);
-
-            if (!ownerClassReloader.getOriginClass().hasConstructor(constructor)) {
-                Type[] argumentTypes = Type.getArgumentTypes(desc);
-                push(argumentTypes.length);
-                newArray(Type.getType(Object.class));
-                int localIndex = newLocal(Type.getType(Object[].class));
-                storeLocal(localIndex);
-
-                for (int i = 0; i < argumentTypes.length; i++) {
-                    box(argumentTypes[i]);
-                    loadLocal(localIndex);
-                    swap();
-                    push(i);
-                    swap();
-                    arrayStore(HotCodeUtil.getBoxedType(argumentTypes[i]));
-                }
-
-                visitInsn(Opcodes.ACONST_NULL);
-                push(constructor.hashCode());
-                loadLocal(localIndex);
-                super.visitMethodInsn(opcode, owner, name, hotcodeGenConstructorDescs);
-            } else {
-                super.visitMethodInsn(opcode, owner, name, desc);
-            }
+            visitConstructor(owner, name, desc);
+        } else if (opcode == Opcodes.INVOKESTATIC) {
+            visitStatic(owner, name, desc);
         } else {
             super.visitMethodInsn(opcode, owner, name, desc);
+        }
+    }
+
+    private void visitConstructor(String owner, String name, String desc) {
+        Long index = classReloaderManager.getIndex(owner);
+
+        String hotcodeGenConstructorDescs = Type.getMethodDescriptor(Type.VOID_TYPE,
+                                                                     Type.getType(HotCodeGenConstructorMarker.class),
+                                                                     Type.INT_TYPE, Type.getType(Object[].class));
+
+        if (index == null || desc.equals(hotcodeGenConstructorDescs)) {
+            super.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, desc);
+            return;
+        }
+
+        ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(index);
+        HotCodeMethod constructor = ownerClassReloader.getLastestClass().getConstructorByNameAndDesc(name, desc);
+
+        if (!ownerClassReloader.getOriginClass().hasConstructor(constructor)) {
+            int localIndex = CodeFragment.packArgsToArray(this, desc);
+            visitInsn(Opcodes.ACONST_NULL);
+            push(constructor.hashCode());
+            loadLocal(localIndex);
+            super.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, hotcodeGenConstructorDescs);
+        } else {
+            super.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, name, desc);
+        }
+    }
+
+    private void visitStatic(String owner, String name, String desc) {
+        Long index = classReloaderManager.getIndex(owner);
+
+        if (index == null || HotCodeConstant.HOTCODE_ADDED_METHODS.contains(name)) {
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc);
+            return;
+        }
+
+        ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(index);
+
+        HotCodeMethod method = ownerClassReloader.getLastestClass().getMethodByNameAndDesc(name, desc);
+
+        if (!ownerClassReloader.getOriginClass().getMethods().contains(method)) {
+            int localIndex = CodeFragment.packArgsToArray(this, desc);
+            push(HotCodeUtil.getMethodIndex(name, desc));
+            loadLocal(localIndex);
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, HotCodeConstant.HOTCODE_STATIC_METHOD_ROUTER_NAME,
+                                  HotCodeConstant.HOTCODE_STATIC_METHOD_ROUTER_DESC);
+            unbox(Type.getReturnType(desc));
+        } else {
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc);
         }
     }
 }

@@ -44,8 +44,12 @@ public class ClassInfoCollectAdapter extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        HotCodeMethod method = new HotCodeMethod(access, name, desc, signature, exceptions);
+
         if ("<init>".equals(name)) {
-            hotCodeClass.addConstructor(new HotCodeMethod(access, name, desc, signature, exceptions));
+            hotCodeClass.addConstructor(method);
+        } else if (!"<clinit>".equals(name)) {
+            hotCodeClass.addMethod(method);
         }
 
         return super.visitMethod(access, name, desc, signature, exceptions);
