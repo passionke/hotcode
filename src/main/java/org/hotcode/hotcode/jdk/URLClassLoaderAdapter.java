@@ -23,8 +23,10 @@ public class URLClassLoaderAdapter extends ClassVisitor {
 
                 @Override
                 public void visitCode() {
+                    super.visitCode();
                     GeneratorAdapter ga = new GeneratorAdapter(mv, access, name, desc);
                     ga.loadArg(0);
+
                     ga.invokeStatic(Type.getType(HotCode.class),
                                     new Method("findClass", Type.getMethodDescriptor(Type.getType(Class.class),
                                                                                      Type.getType(String.class))));
@@ -34,7 +36,6 @@ public class URLClassLoaderAdapter extends ClassVisitor {
                     ga.returnValue();
                     ga.mark(label);
                     ga.pop();
-                    super.visitCode();
                 }
             };
         }

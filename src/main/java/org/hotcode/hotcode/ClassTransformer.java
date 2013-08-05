@@ -20,7 +20,7 @@ import org.objectweb.asm.commons.Method;
  */
 public class ClassTransformer {
 
-    private static final String[] SKIP_PKGS = { "jdk", "javax", "sun", "com.apple.jdk" };
+    private static final String[] SKIP_PKGS = { "java", "javax", "sun", "com.apple.jdk" };
 
     /**
      * Transform a class first time it is loaded to the JVM.
