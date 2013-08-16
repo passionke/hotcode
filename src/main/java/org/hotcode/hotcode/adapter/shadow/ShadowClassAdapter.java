@@ -7,6 +7,9 @@
  */
 package org.hotcode.hotcode.adapter.shadow;
 
+import java.lang.reflect.Modifier;
+
+import org.hotcode.hotcode.util.HotCodeUtil;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -18,16 +21,18 @@ import org.objectweb.asm.Opcodes;
  */
 public class ShadowClassAdapter extends ClassVisitor {
 
-    private String shadowClassname;
+    private String shadowClassName;
+    private String originClassName;
 
     public ShadowClassAdapter(ClassVisitor cv, String shadowClassName){
         super(Opcodes.ASM4, cv);
-        this.shadowClassname = shadowClassName;
+        this.shadowClassName = shadowClassName;
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        super.visit(version, access, shadowClassname, signature, superName, interfaces);
+        originClassName = name;
+        super.visit(version, access, shadowClassName, signature, superName, interfaces);
     }
 
     @Override
@@ -36,6 +41,12 @@ public class ShadowClassAdapter extends ClassVisitor {
         if (name.equals("<clinit>")) {
             return null;
         }
+
+        if (!name.equals("<init>") && !Modifier.isStatic(access)) {
+            return super.visitMethod(HotCodeUtil.changeAccToPublic(HotCodeUtil.changeAccToStatic(access)), name,
+                                     HotCodeUtil.addThisToDesc(desc, originClassName), signature, exceptions);
+        }
+
         return super.visitMethod(access, name, desc, signature, exceptions);
     }
 }

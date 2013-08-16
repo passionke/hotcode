@@ -49,7 +49,7 @@ public class CodeFragment {
      * Insert this code fragment at the start of a method, so it can check the update of a class file before every
      * method invoke.
      * 
-     * @param ga
+     * @param mv
      * @param methodAccess
      * @param methodName
      * @param methodDesc

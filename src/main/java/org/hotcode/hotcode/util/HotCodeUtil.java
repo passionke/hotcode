@@ -2,10 +2,7 @@ package org.hotcode.hotcode.util;
 
 import org.hotcode.hotcode.adapter.ClassInfoCollectAdapter;
 import org.hotcode.hotcode.structure.HotCodeClass;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -77,5 +74,13 @@ public class HotCodeUtil {
                 return Type.getType(Double.class);
         }
         return type;
+    }
+
+    public static int changeAccToPublic(int originAcc) {
+        return ((originAcc & ~Opcodes.ACC_PRIVATE) & ~Opcodes.ACC_PROTECTED) | Opcodes.ACC_PUBLIC;
+    }
+
+    public static int changeAccToStatic(int originAcc) {
+        return originAcc | Opcodes.ACC_STATIC;
     }
 }

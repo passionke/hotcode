@@ -17,8 +17,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Transform method body.
@@ -27,7 +25,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MethodBodyTransformAdapter extends GeneratorAdapter {
 
-    private static final Logger  logger = LoggerFactory.getLogger(MethodBodyTransformAdapter.class);
     private ClassReloaderManager classReloaderManager;
     private HotCodeClass         originClass;
 
@@ -116,6 +113,8 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
             invokeConstructor(owner, name, desc);
         } else if (opcode == Opcodes.INVOKESTATIC) {
             invokeStatic(owner, name, desc);
+        } else if (opcode == Opcodes.INVOKEVIRTUAL || opcode == Opcodes.INVOKESPECIAL) {
+            invokeVirtual(owner, name, desc);
         } else {
             super.visitMethodInsn(opcode, owner, name, desc);
         }
@@ -165,6 +164,30 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
             loadLocal(localIndex);
             super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, HotCodeConstant.HOTCODE_STATIC_METHOD_ROUTER_NAME,
                                   HotCodeConstant.HOTCODE_STATIC_METHOD_ROUTER_DESC);
+            unbox(Type.getReturnType(desc));
+        } else {
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc);
+        }
+    }
+
+    private void invokeVirtual(String owner, String name, String desc) {
+        Long index = classReloaderManager.getIndex(owner);
+
+        if (index == null || HotCodeConstant.HOTCODE_ADDED_METHODS.contains(name)) {
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, desc);
+            return;
+        }
+
+        ClassReloader ownerClassReloader = classReloaderManager.getClassReloader(index);
+
+        HotCodeMethod method = ownerClassReloader.getLastestClass().getMethodByNameAndDesc(name, desc);
+
+        if (!ownerClassReloader.getOriginClass().getMethods().contains(method)) {
+            int localIndex = CodeFragment.packArgsToArray(this, desc);
+            push(HotCodeUtil.getMethodIndex(name, desc));
+            loadLocal(localIndex);
+            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_NAME,
+                                  HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_DESC);
             unbox(Type.getReturnType(desc));
         } else {
             super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, name, desc);
