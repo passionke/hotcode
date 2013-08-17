@@ -27,6 +27,8 @@ fi
 for CASE in $CASES; do
     test "${CASE}" == "." && continue
 
+	CASE=`echo ${CASE} | sed 's/^\.\///g'`
+	
     echo $'\e[32m'"Start running case: ${CASE}"$'\e[00m'
 
     CASE_SOURCE_DIR="${PROJ_DIR}/${CASE_BASE_DIR}/${CASE}"
