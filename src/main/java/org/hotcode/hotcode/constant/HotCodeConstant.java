@@ -55,7 +55,6 @@ public class HotCodeConstant {
     // 2nd parameter: (methodName + methodDesc).hashCode(), aka the unique id the method;
     // 3rd parameter: parameters of the method.
     public static final String      HOTCODE_INSTANCE_METHOD_ROUTER_DESC  = Type.getMethodDescriptor(Type.getType(Object.class),
-                                                                                                    Type.getType(Object.class),
                                                                                                     Type.INT_TYPE,
                                                                                                     Type.getType(Object[].class));
 

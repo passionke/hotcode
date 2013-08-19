@@ -126,7 +126,7 @@ public class MethodBodyTransformAdapter extends GeneratorAdapter {
             int localIndex = CodeFragment.packArgsToArray(this, desc);
             push(HotCodeUtil.getMethodIndex(name, desc));
             loadLocal(localIndex);
-            super.visitMethodInsn(Opcodes.INVOKESTATIC, owner, HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_NAME,
+            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_NAME,
                                   HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_DESC);
             unbox(Type.getReturnType(desc));
         } else {

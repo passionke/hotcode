@@ -1,14 +1,14 @@
 package org.hotcode.hotcode.jdk;
 
+import org.hotcode.hotcode.adapter.FieldAccessTransformAdapter;
 import org.hotcode.hotcode.adapter.shadow.ShadowClassAdapter;
 import org.hotcode.hotcode.constant.HotCodeConstant;
 import org.hotcode.hotcode.reloader.CRMManager;
 import org.hotcode.hotcode.reloader.ClassReloader;
 import org.hotcode.hotcode.reloader.ClassReloaderManager;
 import org.hotcode.hotcode.util.ClassDumper;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.*;
+import org.objectweb.asm.commons.Method;
 
 /**
  * Shadow Class Loader
@@ -41,7 +41,19 @@ public class ShadowClassLoader extends ClassLoader {
             ClassReader cr = new ClassReader(classFile);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
             ClassVisitor cv = new ShadowClassAdapter(cw, name);
-            cr.accept(cv, 0);
+            cv = new ClassVisitor(Opcodes.ASM4, cv) {
+
+                @Override
+                public MethodVisitor visitMethod(final int access, String name, final String desc,
+                                                 final String signature, String[] exceptions) {
+                    return new FieldAccessTransformAdapter(
+                                                           access,
+                                                           new Method(name, desc),
+                                                           super.visitMethod(access, name, desc, signature, exceptions),
+                                                           CRMManager.getIndex(getParent()), 0L);
+                }
+            };
+            cr.accept(cv, ClassReader.EXPAND_FRAMES);
             byte[] classRedefined = cw.toByteArray();
 
             ClassDumper.dump(name, classRedefined);

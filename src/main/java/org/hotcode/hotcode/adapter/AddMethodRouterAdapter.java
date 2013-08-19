@@ -131,7 +131,7 @@ public class AddMethodRouterAdapter extends ClassVisitor {
     }
 
     private void generateInstanceMethodRouter(HotCodeClass originClass, HotCodeClass latestClass) {
-        GeneratorAdapter ga = new GeneratorAdapter(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
+        GeneratorAdapter ga = new GeneratorAdapter(Opcodes.ACC_PUBLIC,
                                                    new Method(HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_NAME,
                                                               HotCodeConstant.HOTCODE_INSTANCE_METHOD_ROUTER_DESC),
                                                    null, null, cv);
@@ -171,7 +171,7 @@ public class AddMethodRouterAdapter extends ClassVisitor {
                 i++;
             }
 
-            ga.loadArg(1);
+            ga.loadArg(0);
             ga.visitLookupSwitchInsn(defaultLabel, keys, labels);
 
             int j = 0;
@@ -180,10 +180,10 @@ public class AddMethodRouterAdapter extends ClassVisitor {
                 ga.mark(labels[j]);
                 Type[] argumentTypes = Type.getArgumentTypes(addedMethod.getDesc());
 
-                ga.loadArg(1); // load this.
+                ga.loadThis();
 
                 for (int k = 0; k < argumentTypes.length; k++) {
-                    ga.loadArg(2);
+                    ga.loadArg(1);
                     ga.push(k);
                     ga.arrayLoad(HotCodeUtil.getBoxedType(argumentTypes[k]));
                     ga.unbox(argumentTypes[k]);
