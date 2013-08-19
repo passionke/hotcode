@@ -50,9 +50,9 @@ public class FieldAccessTransformAdapter extends GeneratorAdapter {
             }
 
             HotCodeClass ownerOriginClass = ownerClassReloader.getOriginClass();
-            HotCodeClass ownerLastestClass = ownerClassReloader.getLastestClass();
+            HotCodeClass ownerLatestClass = ownerClassReloader.getLastestClass();
 
-            HotCodeField field = ownerLastestClass.getFieldByName(name);
+            HotCodeField field = ownerLatestClass.getFieldByName(name);
 
             if (!HotCodeConstant.HOTCODE_ADDED_FIELDS.contains(name) && !ownerOriginClass.hasField(field)) {
                 if (opcode == Opcodes.GETSTATIC) {
