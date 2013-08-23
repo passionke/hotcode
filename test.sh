@@ -69,7 +69,7 @@ for CASE in $CASES; do
     cd ${CASE_TARGET_DIR}
     while [ 1 -eq 1 ] ; do
         BASE_FILE_CURRENT=`stat -c %Y Base.class`
-        if [ "$BASE_FILE_CURRENT" = "$BASE_FILE_LAST_MODIFIED" ]; then
+        if [ "$BASE_FILE_CURRENT" > "$BASE_FILE_LAST_MODIFIED" ]; then
             break
         fi
     done
