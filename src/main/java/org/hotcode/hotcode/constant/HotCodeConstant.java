@@ -40,9 +40,21 @@ public class HotCodeConstant {
      */
     public static final String      HOTCODE_STATIC_METHOD_ROUTER_NAME    = "__hotcode_static_method_router__";
 
+    /**
+     * The name of the method that is add to class as a instance method router.
+     */
+    public static final String      HOTCODE_INSTANCE_METHOD_ROUTER_NAME  = "__hotcode_instance_method_router__";
+
     // =================== Method Descriptors ===================
-    // First param: (methodName + methodDesc).hashCode(); Second param: parameters of the method.
+    // 1st parameter: (methodName + methodDesc).hashCode(), aka the unique id the method;
+    // 2nd parameter: parameters of the method.
     public static final String      HOTCODE_STATIC_METHOD_ROUTER_DESC    = Type.getMethodDescriptor(Type.getType(Object.class),
+                                                                                                    Type.INT_TYPE,
+                                                                                                    Type.getType(Object[].class));
+    // 1st parameter: "this" of the method.
+    // 2nd parameter: (methodName + methodDesc).hashCode(), aka the unique id the method;
+    // 3rd parameter: parameters of the method.
+    public static final String      HOTCODE_INSTANCE_METHOD_ROUTER_DESC  = Type.getMethodDescriptor(Type.getType(Object.class),
                                                                                                     Type.INT_TYPE,
                                                                                                     Type.getType(Object[].class));
 
