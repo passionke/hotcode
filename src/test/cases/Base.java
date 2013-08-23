@@ -12,6 +12,7 @@ public class Base {
         File baseClassFile = new File(classLoader.getResource("Base.class").getFile());
         long lastModified = baseClassFile.lastModified();
         Class<?> klass = classLoader.loadClass("A");
+        baseClassFile.setLastModified(System.currentTimeMillis());
         Method method = klass.getMethod("test");
         Boolean result = (Boolean) method.invoke(klass.newInstance());
 

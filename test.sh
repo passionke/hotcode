@@ -49,6 +49,8 @@ for CASE in $CASES; do
     cd ${CASE_TARGET_DIR}
     javac *.java
 
+    BASE_FILE_LAST_MODIFIED=`stat -c %Y Base.class`
+
     ### Run with HotCode
     java -javaagent:${HOTCODE_AGENT_PATH} -noverify Base ${CASE} &>result &
     JOB_ID=`jobs -r | awk '{print $1}' | grep -o '[0-9]\+'`
@@ -59,6 +61,15 @@ for CASE in $CASES; do
     for NAME in `ls ??.java`; do
         TARGET_NAME=`echo $NAME | sed 's/.\./\./g'`
         cp $NAME ${CASE_TARGET_DIR}/${TARGET_NAME}
+    done
+
+    ### Waiting until Java Agent is been installed.
+    cd ${CASE_TARGET_DIR}
+    while [ 1 -eq 1 ] ; do
+        BASE_FILE_CURRENT=`stat -c %Y Base.class`
+        if [ "$BASE_FILE_CURRENT" = "$BASE_FILE_LAST_MODIFIED" ]; then
+            break
+        fi
     done
 
     cd ${CASE_TARGET_DIR}
