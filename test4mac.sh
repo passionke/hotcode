@@ -25,7 +25,7 @@ else
 fi
 
 for CASE in $CASES; do
-    test4mac "${CASE}" == "." && continue
+    test "${CASE}" == "." && continue
 
 	CASE=`echo ${CASE} | sed 's/^\.\///g'`
 	
@@ -95,6 +95,6 @@ for CASE in $CASES; do
     fi
 done
 
-test4mac "${FAILED}" == "true" && exit 1
+test "${FAILED}" == "true" && exit 1
 
-echo $'\e[32m'"All test4mac cases are pass!"$'\e[00m'
+echo $'\e[32m'"All test cases are pass!"$'\e[00m'
