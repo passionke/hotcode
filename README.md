@@ -20,3 +20,8 @@ bash test.sh addPrimaryFieldTest
 ```
 
 `addPrimaryFieldTest` can be any other test case's name.
+
+如果使用的时mac系统，可以试试
+bash test4mac.sh
+
+支持1.6版本的java
