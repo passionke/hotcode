@@ -68,7 +68,7 @@ public class AddMethodRouterAdapter extends ClassVisitor {
         Set<HotCodeMethod> originMethodSet = originClass.getMethods();
         Set<HotCodeMethod> lastestMethodSet = latestClass.getMethods();
 
-        Set<HotCodeMethod> addedMethodSet = new TreeSet<>(new Comparator<HotCodeMethod>() {
+        Set<HotCodeMethod> addedMethodSet = new TreeSet<HotCodeMethod>(new Comparator<HotCodeMethod>() {
 
             @Override
             public int compare(HotCodeMethod o1, HotCodeMethod o2) {
@@ -140,7 +140,7 @@ public class AddMethodRouterAdapter extends ClassVisitor {
         Set<HotCodeMethod> originMethodSet = originClass.getMethods();
         Set<HotCodeMethod> lastestMethodSet = latestClass.getMethods();
 
-        Set<HotCodeMethod> addedMethodSet = new TreeSet<>(new Comparator<HotCodeMethod>() {
+        Set<HotCodeMethod> addedMethodSet = new TreeSet<HotCodeMethod>(new Comparator<HotCodeMethod>() {
 
             @Override
             public int compare(HotCodeMethod o1, HotCodeMethod o2) {

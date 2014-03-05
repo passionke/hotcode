@@ -33,7 +33,7 @@ public class JdkReflectHelper {
      * Remove HotCode added fields
      */
     public static Field[] filterHotCodeFields(Field[] fields) {
-        List<Field> rets = new ArrayList<>();
+        List<Field> rets = new ArrayList<Field>();
         for (Field f : fields) {
             if (f.getName().equals(HotCodeConstant.HOTCODE_ADDED_FIELDS)
                 || f.getName().equals(HotCodeConstant.HOTCODE_STATIC_FIELDS)) {
@@ -57,7 +57,7 @@ public class JdkReflectHelper {
             fields = shadowClass.getDeclaredFields();
         }
         try {
-            List<Field> holderFields = new ArrayList<>();
+            List<Field> holderFields = new ArrayList<Field>();
 
             Field clazzField = Field.class.getDeclaredField("clazz");
             clazzField.setAccessible(true);

@@ -2,8 +2,8 @@ package org.hotcode.hotcode.util;
 
 public class HotCodeThreadLocalUtil {
 
-    private static final ThreadLocal<Boolean> FIELD_ACCESS_THREAD_LOCAL = new ThreadLocal<>();
-    private static final ThreadLocal<Boolean> LOADING_SHADOW_CLASS      = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> FIELD_ACCESS_THREAD_LOCAL = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean> LOADING_SHADOW_CLASS      = new ThreadLocal<Boolean>();
 
     public static void access() {
         FIELD_ACCESS_THREAD_LOCAL.set(true);

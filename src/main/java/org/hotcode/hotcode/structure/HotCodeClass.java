@@ -17,9 +17,9 @@ public class HotCodeClass {
     private int                access;
     private String             className;
     private String             superClassName;
-    private Set<HotCodeField>  fields       = new LinkedHashSet<>();
-    private Set<HotCodeMethod> constructors = new LinkedHashSet<>();
-    private Set<HotCodeMethod> methods      = new LinkedHashSet<>();
+    private Set<HotCodeField>  fields       = new LinkedHashSet<HotCodeField>();
+    private Set<HotCodeMethod> constructors = new LinkedHashSet<HotCodeMethod>();
+    private Set<HotCodeMethod> methods      = new LinkedHashSet<HotCodeMethod>();
 
     public int getAccess() {
         return access;

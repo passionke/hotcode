@@ -24,7 +24,9 @@ public class ClassRedefiner {
     public static void redefine(Class<?> klass, byte[] classFile) {
         try {
             inst.redefineClasses(new ClassDefinition(klass, classFile));
-        } catch (ClassNotFoundException | UnmodifiableClassException e) {
+        } catch (ClassNotFoundException e) {
+            logger.error("Failed to redefine class " + klass.getName() + ".", e);
+        } catch (UnmodifiableClassException e) {
             logger.error("Failed to redefine class " + klass.getName() + ".", e);
         }
     }

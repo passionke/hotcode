@@ -21,7 +21,7 @@ import com.google.common.collect.Sets;
 public class ConstructorTransformAdapter extends ClassVisitor {
 
     private HotCodeClass                   originClass;
-    private Map<HotCodeMethod, MethodNode> addedConstructors          = new TreeMap<>(new Comparator<HotCodeMethod>() {
+    private Map<HotCodeMethod, MethodNode> addedConstructors          = new TreeMap<HotCodeMethod, MethodNode>(new Comparator<HotCodeMethod>() {
 
                                                                           @Override
                                                                           public int compare(HotCodeMethod o1,
@@ -29,7 +29,7 @@ public class ConstructorTransformAdapter extends ClassVisitor {
                                                                               return o1.hashCode() - o2.hashCode();
                                                                           }
                                                                       });
-    private Set<HotCodeMethod>             retainedOriginConstructors = new HashSet<>();
+    private Set<HotCodeMethod>             retainedOriginConstructors = new HashSet<HotCodeMethod>();
 
     public ConstructorTransformAdapter(ClassVisitor cv, ClassReloader classReloader){
         super(Opcodes.ASM4, cv);

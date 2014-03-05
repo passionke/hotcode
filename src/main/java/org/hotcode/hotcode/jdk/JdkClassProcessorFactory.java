@@ -16,7 +16,7 @@ import org.objectweb.asm.ClassVisitor;
  */
 public class JdkClassProcessorFactory {
 
-    public static final Map<Class<?>, Class<? extends ClassVisitor>> JDK_CLASS_PROCESSOR_HOLDER = new HashMap<>();
+    public static final Map<Class<?>, Class<? extends ClassVisitor>> JDK_CLASS_PROCESSOR_HOLDER = new HashMap<Class<?>, Class<? extends ClassVisitor>>();
 
     static {
         JDK_CLASS_PROCESSOR_HOLDER.put(ClassLoader.class, ClassLoaderAdapter.class);

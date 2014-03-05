@@ -58,8 +58,8 @@ public class HotCodeConstant {
                                                                                                     Type.INT_TYPE,
                                                                                                     Type.getType(Object[].class));
 
-    public static final Set<String> HOTCODE_ADDED_FIELDS                 = new HashSet<>();
-    public static final Set<String> HOTCODE_ADDED_METHODS                = new HashSet<>();
+    public static final Set<String> HOTCODE_ADDED_FIELDS                 = new HashSet<String>();
+    public static final Set<String> HOTCODE_ADDED_METHODS                = new HashSet<String>();
 
     public static final String      HOTCODE_SHADOW_CLASS_POSTFIX         = "__$$shadow_class$$__";
 

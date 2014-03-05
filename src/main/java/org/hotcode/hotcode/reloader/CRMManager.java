@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CRMManager {
 
     private static AtomicLong                      indexGenerator          = new AtomicLong(0);
-    private static Map<ClassLoader, Long>          classLoaderIndexMap     = new ConcurrentHashMap<>();
-    private static Map<Long, ClassReloaderManager> classReloaderManagerMap = new ConcurrentHashMap<>();
+    private static Map<ClassLoader, Long>          classLoaderIndexMap     = new ConcurrentHashMap<ClassLoader, Long>();
+    private static Map<Long, ClassReloaderManager> classReloaderManagerMap = new ConcurrentHashMap<Long, ClassReloaderManager>();
 
     public static Long getIndex(ClassLoader classLoader) {
         return classLoaderIndexMap.get(classLoader);

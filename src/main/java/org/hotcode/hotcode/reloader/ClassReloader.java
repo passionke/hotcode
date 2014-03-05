@@ -81,7 +81,11 @@ public class ClassReloader {
         try {
             Method method = klass.getMethod(HotCodeConstant.HOTCODE_INTERFACE_CLINIT_METHOD_NAME);
             method.invoke(klass);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (NoSuchMethodException e) {
+            logger.error("Failed to init interface " + klass.getName() + ".", e);
+        } catch (InvocationTargetException e) {
+            logger.error("Failed to init interface " + klass.getName() + ".", e);
+        } catch (IllegalAccessException e) {
             logger.error("Failed to init interface " + klass.getName() + ".", e);
         }
     }
@@ -111,7 +115,11 @@ public class ClassReloader {
             try {
                 Method method = klass.getMethod(HotCodeConstant.HOTCODE_CLINIT_METHOD_NAME);
                 method.invoke(klass);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            } catch (NoSuchMethodException e) {
+                logger.error("Failed reinit class " + klass.getName() + ".", e);
+            } catch (InvocationTargetException e) {
+                logger.error("Failed reinit class " + klass.getName() + ".", e);
+            } catch (IllegalAccessException e) {
                 logger.error("Failed reinit class " + klass.getName() + ".", e);
             }
 

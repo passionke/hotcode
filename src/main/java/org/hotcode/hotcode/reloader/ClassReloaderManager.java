@@ -29,11 +29,11 @@ public class ClassReloaderManager {
     /**
      * Map from a internal name of a class to index.
      */
-    private Map<String, Long>                     classMap                  = new ConcurrentHashMap<>();
+    private Map<String, Long>                     classMap                  = new ConcurrentHashMap<String, Long>();
     /**
      * Map from indexGenerator to class reloader.
      */
-    private Map<Long, ClassReloader>              classReloaderMap          = new ConcurrentHashMap<>();
+    private Map<Long, ClassReloader>              classReloaderMap          = new ConcurrentHashMap<Long, ClassReloader>();
 
     private WeakReference<ClassLoader>            shadowClassLoader         = null;
     /**
@@ -105,7 +105,7 @@ public class ClassReloaderManager {
 
         if (assistClassClassLoader == null || (accl = assistClassClassLoader.get()) == null) {
             accl = new AssistClassClassLoader(classLoader, getClassReloader(getIndex(className.replace(".", "/"))));
-            assistClassClassLoader = new WeakReference<>(accl);
+            assistClassClassLoader = new WeakReference<AssistClassClassLoader>(accl);
         }
 
         try {
